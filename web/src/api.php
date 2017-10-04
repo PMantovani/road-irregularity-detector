@@ -17,11 +17,11 @@ if (empty($input_json) && $method === "POST") {
 $mysqli = new mysqli("localhost", "road", "road-mysql", "roadmanager");
 
 if ($method === "POST") {
-    $query = "INSERT INTO detections (position, reading_value, reading_date) VALUES (?, ?, NOW());";
+    $query = "INSERT INTO detections (latitude, longitude, accelerometer, reading_date) VALUES (?, ?, ?, NOW());";
 
     if ($stmt = $mysqli->prepare($query)) {
 
-        $stmt->bind_param("ss", $input_json["position"], $input_json["reading_value"]);
+        $stmt->bind_param("sss", $input_json["latitude"], $input_json["longitude"], $input_json["accelerometer"]);
         $stmt->execute();
         $stmt->close();
     }

@@ -3,28 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Vias irregulares</title>
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body ng-app="MyApp" ng-controller="AppController as ctrl">
     <table>
         <thead>
             <tr>
-            <th>ID</th>
-            <th>Coordenadas</th>
-            <th>Acelerômetro</th>
-            <th>Hora e Data</th>
+                <th>ID</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Acelerômetro</th>
+                <th>Hora e Data</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="detection in ctrl.detections">
             <td>{{ detection.id }}</td>
-            <td>{{ detection.position }}</td>
-            <td>{{ detection.reading_value }}</td>
+            <td>{{ detection.latitude }}</td>
+            <td>{{ detection.longitude }}</td>
+            <td>{{ detection.accelerometer }}</td>
             <td>{{ detection.reading_date }}</td>
         </tr>
         </tbody>
     </table>
+    <div id="map"></div>
 </body>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaJlQ4XP8Pl0oOp5JO9YqfyvyDaTg00eg"></script>
 <script src="node_modules/angular/angular.min.js"></script>
 <script src="js/AppController.js"></script>
 </html>
