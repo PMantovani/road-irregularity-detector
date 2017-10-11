@@ -1,4 +1,9 @@
 #map {
-    height: 400px;
-    width: 400px;
+    height: 600px;
+    width: 100%;
+}
+
+.rd-h2 {
+    margin-top: 40px;
+    font-weight: 200;
 }

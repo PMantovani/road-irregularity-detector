@@ -14,16 +14,27 @@
 byte mac[] = {
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-IPAddress ip(192, 168, 1, 177);
+IPAddress ip(192, 168, 25, 177);
 EthernetClient client;
-IPAddress server(192, 168, 1, 42);
+IPAddress server(192, 168, 25, 22);
+//byte server[] = {192, 168, 25, 18};
 TinyGPSPlus gps;
 
 void setup() {
-  Serial.begin(9600); // USB Serial to pins 0 and 1
-  Serial3.begin(9600); // GPS Serial to pins 14 and 15
   delay(1000); // Give some time to boot up the ethernet module
-  Ethernet.begin(mac, ip);
+  
+  Serial.begin(9600); // USB Serial to pins 0 and 1
+  Serial3.begin(9600); // GPS Serial
+  
+  //Ethernet.begin(mac, ip);
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to start Ethernet module");
+  }
+  else {
+    Serial.print("Started at ");
+    Serial.println(Ethernet.localIP());
+  }
+  
 }
 
 void loop() {
@@ -33,31 +44,62 @@ void loop() {
   
   // Post data to server if location found
   if(gps.location.isValid()) {
-    postDetection(123, gps.location.lat(), gps.location.lng());
+    //printDetectionToSerial();
+    //postDetection(123, gps.location.lat(), gps.location.lng(), gps.course.deg(), gps.speed.kmph());
   }
   else {
     Serial.println("No GPS data");
+    //postDetection(123, gps.location.lat(), gps.location.lng(), gps.course.deg(), gps.speed.kmph());
   }
 
   // Delay to avoid multiple requests
-  delay(10000);
+  smartDelay(10000);
 }
 
-void postDetection(int accelerometer, float latitude, float longitude) {
-  String json = "{\"latitude\": \"@latitude\", \"longitude\": \"@longitude\","
-                "\"accelerometer\": \"@accelerometer\"}";
+void printDetectionToSerial() {
+  Serial.println("*** BURACO DETECTADO ***");
+  Serial.print("Localizacao: ");
+  Serial.print(gps.location.lat());
+  Serial.print(",");  Serial.print(gps.location.lng());
+  Serial.print("   Curso (graus): ");
+  Serial.print(gps.course.deg());
+  Serial.print("   Velocidade (km/h): ");
+  Serial.print(gps.speed.kmph());
+  Serial.print("   Acelerometro: ");
+  Serial.println("123");
+  Serial.println(); 
+}
+
+void postDetection(int accelerometer, float latitude, float longitude, float course, float speed) {
+  String json = "{\"latitude\": \"@latitude\", \"longitude\": \"@longitude\", "
+                "\"course\": \"@latitude\", \"speed\": \"@speed\", \"accelerometer\": \"@accelerometer\"}";
   json.replace("@latitude", String(latitude));
   json.replace("@longitude", String(longitude));
   json.replace("@accelerometer", String(accelerometer));
+  json.replace("@course", String(course));
+  json.replace("@speed", String(speed));
 
   client.stop(); // close any open connections
   
   if (client.connect(server, 8080)) {
-    client.println("POST api.php HTTP/1.1");
-    client.println("Content-Type: application/json");
-    client.println("Connection: close");
+    Serial.print("Connected to server!");
+    String request = "POST /api.php HTTP/1.1\r\n";
+    request += "Host: 192.168.25.22:8080\r\n";
+    request += "Content-Type: application/json\r\n";
+    request += "Content-Length: ";
+    request += json.length();
+    request += "\r\n\r\n";
+    request += json;
+    
+    client.println(request);
+   /* client.println();
     client.println();
-    client.println(json);
+    client.println();
+    client.println();
+    client.print();
+    client.println(json.length()+1);
+    client.println();
+    client.print(json);*/
   }
   
   else {
@@ -66,8 +108,26 @@ void postDetection(int accelerometer, float latitude, float longitude) {
 }
 
 void getGpsData() {
-  if(Serial3.available()) {
+  while(Serial3.available()) {
     gps.encode(Serial3.read());
   }
 }
 
+static void smartDelay(unsigned long ms)
+{
+  unsigned long start = millis();
+  do 
+  {
+    while (Serial3.available())
+      gps.encode(Serial3.read());
+    while (Serial.available()) {
+      Serial.read();
+      Serial.read();
+      postDetection(123, gps.location.lat(), gps.location.lng(), gps.course.deg(), gps.speed.kmph());
+    }
+    while (client.available()) {
+      char c = client.read();
+      Serial.print(c);
+    }
+  } while (millis() - start < ms);
+}

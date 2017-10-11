@@ -3,17 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Vias irregulares</title>
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body ng-app="MyApp" ng-controller="AppController as ctrl">
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Acelerômetro</th>
-                <th>Hora e Data</th>
+<div class="container-fluid">
+    <div class="row">
+        <div class="jumbotron col-12">
+            <h1 class="display-3">Vias irregulares</h1>
+            <p class="lead">Através de sensores e sistemas embarcados, as vias nos locais abaixo foram detectadas como irregulares,
+                possuindo buracos que podem potencialmente danificar o seu veículo.</p>
+        </div>
+    </div>
+    <div class="row">
+    <table class="table table-hover col-12">
+        <thead class="thead-inverse">
+        <tr>
+            <th>ID</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Acelerômetro</th>
+            <th>Hora e Data</th>
         </tr>
         </thead>
         <tbody>
@@ -26,7 +36,12 @@
         </tr>
         </tbody>
     </table>
-    <div id="map"></div>
+    </div>
+    <div class="row">
+        <h2 class="display-4 rd-h2">Mapa de irregularidades</h2>
+        <div id="map"></div>
+    </div>
+</div>
 </body>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaJlQ4XP8Pl0oOp5JO9YqfyvyDaTg00eg"></script>

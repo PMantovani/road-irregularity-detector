@@ -11,6 +11,8 @@ $input_json = json_decode($input, true);
 
 if (empty($input_json) && $method === "POST") {
     http_response_code(400);
+    error_log(print_r($input, true));
+    error_log(print_r($input_json, true));
     exit();
 }
 
