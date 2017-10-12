@@ -1,9 +1,8 @@
 #map {
-    height: 600px;
+    height: 100%;
     width: 100%;
 }
 
-.rd-h2 {
-    margin-top: 40px;
-    font-weight: 200;
+md-sidenav {
+    width: 450px;
 }

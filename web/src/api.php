@@ -28,7 +28,7 @@ if ($method === "POST") {
         $stmt->close();
     }
 
-    echo "success";
+    http_response_code(201);
 }
 else if ($method === "GET") {
     $query = "SELECT * FROM detections;";

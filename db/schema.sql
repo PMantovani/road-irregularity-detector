@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS detections (
   sensor_id         BIGINT(12) UNSIGNED,
   latitude          FLOAT(11,8) NOT NULL,
   longitude         FLOAT(11,8) NOT NULL,
+  speed             FLOAT(5,2),
+  course            SMALLINT,
   accelerometer     INT NOT NULL,
   reading_date      DATETIME,
   PRIMARY KEY (id)

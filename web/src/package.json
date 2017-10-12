@@ -1,11 +1,18 @@
 {
   "name": "road-irregularity-detector",
   "version": "1.0.0",
-  "description": "",
+  "description": "Detects irregularities in roads using accelerometers and gps in Arduino",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Pedro Mantovani Antunes",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.6.6",
+    "angular-animate": "^1.6.6",
+    "angular-aria": "^1.6.6",
+    "angular-material": "^1.1.5",
+    "angular-messages": "^1.6.6"
+  }
 }
