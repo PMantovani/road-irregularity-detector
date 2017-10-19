@@ -51,6 +51,8 @@ app.service('Map', function() {
             position: coordinates,
             animation: google.maps.Animation.DROP
         });
+        var latLng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
+        this.map.setCenter(latLng);
     };
 
     this.addHeatLocation = function(coordinates) {
@@ -92,5 +94,5 @@ app.filter('formatDate', function() {
             }
         }
         return input;
-    }
+    };
 });

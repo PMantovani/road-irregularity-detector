@@ -11,8 +11,10 @@ $input_json = json_decode($input, true);
 
 if (empty($input_json) && $method === "POST") {
     http_response_code(400);
-    error_log(print_r($input, true));
-    error_log(print_r($input_json, true));
+    exit();
+}
+else if($method !== "GET" && $method !== "POST") {
+    http_response_code(405);
     exit();
 }
 
@@ -37,6 +39,7 @@ else if ($method === "GET") {
         $allRows = $result->fetch_all(MYSQLI_ASSOC);
         $json = json_encode($allRows);
         $result->close();
+        header("Content-Type: application/json");
         echo $json;
     }
 }
