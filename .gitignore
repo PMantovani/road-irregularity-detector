@@ -3,3 +3,5 @@
 road-irregularity-detector.iml
 web/src/.htaccess
 web/src/node_modules/
+web/src/Gruntfile.js
+web/dist/
