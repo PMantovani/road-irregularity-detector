@@ -18,8 +18,9 @@ if __name__ == "__main__":
     # keeps forever in the loop until a keyboard interrupt is detected
     try:
         while True:
-            print ("Latitude: " + str(my_gps.msg.latitude))
-            print ("Longitude: " + str(my_gps.msg.longitude))
+            print ("Latitude: " + str(my_gps.latitude))
+            print ("Longitude: " + str(my_gps.longitude))
+            print ("Speed: " + str(my_gps.speed))
             print ("Accelerometer X: " + str(my_accelerometer.accel_x))
             print ("Accelerometer Y: " + str(my_accelerometer.accel_y))
             print ("Accelerometer Z: " + str(my_accelerometer.accel_z))
