@@ -2,18 +2,23 @@ import serial
 import time
 import sys
 import pynmea2
+import threading
 
-port = '/dev/ttyS0'
 
-try:
-    my_serial = serial.Serial(port, 9600, timeout=5)
+class GPS(threading.Thread):
+    def __init__(self):
+        self.port = '/dev/ttyS0'
+        self.speed = 9600
+        self.msg = None
 
-    while True:
-        data = my_serial.readline()
-	if (data.startswith("$GPGGA")):
-		msg = pynmea2.parse(data)
-        	print 'Latitude: ' + str(msg.latitude)
-        	print 'Longitude: ' + str(msg.longitude)
+    def run(self):
+        try:
+            my_serial = serial.Serial(self.port, self.speed, timeout=5)
 
-except Exception as e:
-    sys.stderr.write('Error reading serial port %s: %s\n' % (type(e).__name__, e))
+            while True:
+                data = my_serial.readline()
+                if data.startswith("$GPGGA"):
+                    self.msg = pynmea2.parse(data)
+
+        except Exception as e:
+            sys.stderr.write('Error reading serial port %s: %s\n' % (type(e).__name__, e))
