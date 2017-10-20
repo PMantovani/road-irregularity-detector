@@ -1,11 +1,12 @@
 import serial
 import sys
 import pynmea2
-import threading
+from threading import Thread
 
 
-class GPS(threading.Thread):
+class GPS(Thread):
     def __init__(self, run_event):
+        Thread.__init__(self)
         self.port = '/dev/ttyS0'
         self.speed = 9600
         self.msg = pynmea2.parse("$GPGGA,,,,,,,,,,,,,,") # initialize empty msg
