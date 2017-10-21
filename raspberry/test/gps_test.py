@@ -1,10 +1,14 @@
+# noinspection PyUnresolvedReferences
 import unittest
+# noinspection PyUnresolvedReferences
 import sys
 sys.path.insert(1, '../src')
+# noinspection PyUnresolvedReferences
 import gps
 
 
 class GPSTest(unittest.TestCase):
+    # noinspection PyPep8Naming,PyAttributeOutsideInit
     def setUp(self):
         self.gps_test = gps.GPS(None)
 

@@ -1,5 +1,7 @@
+# noinspection PyUnresolvedReferences
 import smbus
 import time
+# noinspection PyUnresolvedReferences
 from threading import Thread
 
 
@@ -20,10 +22,13 @@ class Accelerometer(Thread):
 
     # reads a word from I2C bus 1.
     def read_word(self, register):
-        high = self.bus.read_byte_data(self.address, register)
-        low = self.bus.read_byte_data(self.address, register+1)
-        val = (high << 8) + low
-        return val
+        try:
+            high = self.bus.read_byte_data(self.address, register)
+            low = self.bus.read_byte_data(self.address, register+1)
+            val = (high << 8) + low
+            return val
+        except IOError:
+            return None
 
     # converts word reading into complement of 2
     def read_word_2c(self, register):
