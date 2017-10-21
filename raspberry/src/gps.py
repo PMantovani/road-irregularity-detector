@@ -17,6 +17,18 @@ class GPS(Thread):
         self.longitude = 0.
         self.speed = 0.
 
+    @staticmethod
+    def convert_degrees(degrees, minutes):
+        return degrees + minutes/60.
+
+    def calculate_decimal(self, value, direction):
+        degrees = int(value/100)
+        minutes = float(value) - (100*degrees)
+        abs_degree = self.convert_degrees(degrees, minutes)
+        if direction == 'W' or direction == 'S':
+            abs_degree *= -1.
+        return abs_degree
+
     def parse_gprmc(self, msg):
         params = msg.split(',')
 
@@ -27,15 +39,11 @@ class GPS(Thread):
             self.signal_validity = True
 
         # calculates latitude
-        self.latitude = float(params[3])
-        if params[4] == 'S':
-            self.latitude *= -1.
+        self.latitude = round(self.calculate_decimal(float(params[3]), params[4]), 5)
+        self.longitude = round(self.calculate_decimal(float(params[5]), params[6]), 5)
+        self.speed = round(float(params[7])*1.852, 2)  # converts from knots to km/h
 
-        self.longitude = float(params[5])
-        if params[6] == 'W':
-            self.longitude *= -1.
-
-        self.speed = float(params[7])*1.852
+        return self.latitude, self.longitude, self.speed
 
     def run(self):
         try:
