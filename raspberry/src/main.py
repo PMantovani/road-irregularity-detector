@@ -33,13 +33,16 @@ if __name__ == "__main__":
         # keeps forever in the loop until a keyboard interrupt is detected
         try:
             while True:
+                time_num = time.time()
+                time_str = "{:.5f}".format(time_num)
+
                 f.write(str(my_accelerometer.accel_x) + ",")
                 f.write(str(my_accelerometer.accel_y) + ",")
                 f.write(str(my_accelerometer.accel_z) + ",")
                 f.write(str(my_gps.latitude) + ",")
                 f.write(str(my_gps.longitude) + ",")
                 f.write(str(my_gps.speed) + ",")
-                f.write(str(time.time()) + "\n")
+                f.write(time_str + "\n")
                 time.sleep(0.01)
         except KeyboardInterrupt:
             run_event.clear()
