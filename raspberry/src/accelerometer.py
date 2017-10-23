@@ -31,8 +31,8 @@ class Accelerometer(Thread):
         self.ACC_SCALE_START_BIT = 4
 
         # offset constants
-        self.X_OFFSET = 710
-        self.Y_OFFSET = 2591
+        self.X_OFFSET = 820
+        self.Y_OFFSET = 2627
         self.Z_OFFSET = 1310
 
         # values

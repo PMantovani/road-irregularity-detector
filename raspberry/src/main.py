@@ -28,7 +28,7 @@ if __name__ == "__main__":
         f.write("Latitude,")
         f.write("Longitude,")
         f.write("Speed,")
-        f.write("Time,\n")
+        f.write("Time\n")
 
         # keeps forever in the loop until a keyboard interrupt is detected
         try:
