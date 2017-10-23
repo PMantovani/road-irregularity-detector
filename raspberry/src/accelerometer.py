@@ -15,6 +15,12 @@ class Accelerometer(Thread):
         # register constants
         self.MPU_ADDRESS = 0x68  # I2C accelerometer address
         self.REG_PWR_MGMT_1 = 0x6b  # register of power management 1
+        self.REG_ACC_X_OFFSET_H = 0x06  # registers for offset
+        self.REG_ACC_X_OFFSET_L = 0x07
+        self.REG_ACC_Y_OFFSET_H = 0x08
+        self.REG_ACC_Y_OFFSET_L = 0x09
+        self.REG_ACC_Z_OFFSET_H = 0x0a
+        self.REG_ACC_Z_OFFSET_L = 0x0b
         self.REG_ACCEL_XOUT_H = 0x3b
         self.REG_ACCEL_YOUT_H = 0x3d
         self.REG_ACCEL_ZOUT_H = 0x3f
@@ -23,6 +29,11 @@ class Accelerometer(Thread):
         # other useful constants
         self.ACC_SCALE_LENGTH = 2
         self.ACC_SCALE_START_BIT = 4
+
+        # offset constants
+        self.X_OFFSET = 710
+        self.Y_OFFSET = 2591
+        self.Z_OFFSET = 1310
 
         # values
         self.accel_x = 0.0
@@ -48,6 +59,13 @@ class Accelerometer(Thread):
             return None
         new_value = self.merge_bits(original, value, left_bit_start, length)
         return self.write_byte(register, new_value)
+
+    # writes a word to I2C
+    def write_word(self, register, value):
+        value_h = value >> 8
+        value_l = value & 0xFF
+        self.write_byte(register, value_h)
+        return self.write_byte(register+1, value_l)
 
     # writes a byte to a register in I2C bus 1
     def write_byte(self, register, value):
@@ -81,6 +99,18 @@ class Accelerometer(Thread):
         else:
             return val
 
+    # adjusts accelerometer offset
+    def set_accelerometer_offset(self, axis, value):
+        axis = axis.lower()
+        if axis == 'x':
+            return self.write_word(self.REG_ACC_X_OFFSET_H, value)
+        elif axis == 'y':
+            return self.write_word(self.REG_ACC_Y_OFFSET_H, value)
+        elif axis == 'z':
+            return self.write_word(self.REG_ACC_Z_OFFSET_H, value)
+        else:
+            return None
+
     # sets accelerometer scale. Options are: 2, 4, 8 or 16 (g)
     def set_accelerometer_scale(self, new_range):
         if new_range == 2:
@@ -101,11 +131,15 @@ class Accelerometer(Thread):
     def run(self):
         # get out of power saving mode
         self.bus.write_byte_data(self.MPU_ADDRESS, self.REG_PWR_MGMT_1, 0)
+        # set accelerometer offsets
+        self.set_accelerometer_offset('x', self.X_OFFSET)
+        self.set_accelerometer_offset('y', self.Y_OFFSET)
+        self.set_accelerometer_offset('z', self.Z_OFFSET)
         # set accelerometer scale
         self.set_accelerometer_scale(4)
 
         while self.run_event.is_set():
-            self.accel_x = self.read_word_2c(self.REG_ACCEL_XOUT_H) * self.scale / 32767.
-            self.accel_y = self.read_word_2c(self.REG_ACCEL_YOUT_H) * self.scale / 32767.
-            self.accel_z = self.read_word_2c(self.REG_ACCEL_ZOUT_H) * self.scale / 32767.
+            self.accel_x = round(self.read_word_2c(self.REG_ACCEL_XOUT_H) * self.scale / 32767., 5)
+            self.accel_y = round(self.read_word_2c(self.REG_ACCEL_YOUT_H) * self.scale / 32767., 5)
+            self.accel_z = round(self.read_word_2c(self.REG_ACCEL_ZOUT_H) * self.scale / 32767., 5)
             time.sleep(0.01)
