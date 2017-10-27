@@ -18,7 +18,6 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
             for (var i=0; i<self.detections.length; i++) {
                 var coordinates = { lat: parseFloat(self.detections[i].latitude),
                                     lng: parseFloat(self.detections[i].longitude)};
-                //Map.addMarker(coordinates);
                 Map.addHeatLocation(coordinates);
             }
         }, function error(response) {

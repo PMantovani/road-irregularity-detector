@@ -2,9 +2,17 @@ import time
 import gps
 import accelerometer
 import threading
-import os
+import requests
+import json
 
 if __name__ == "__main__":
+    api_url = 'http://localhost:8080/api.php'
+    accel_scale = 8
+    accel_limit = 4
+    speed_limit = 30
+    sleep_after_request = 10
+    sleep_repeat = 0.01
+
     run_event = threading.Event()
     run_event.set()
 
@@ -15,37 +23,25 @@ if __name__ == "__main__":
     # starts accelerometer thread
     my_accelerometer = accelerometer.Accelerometer(run_event)
     my_accelerometer.start()
+    my_accelerometer.set_accelerometer_scale(accel_scale)
 
-    # creates folder if it doesn't exist
-    folder_path = "../data"
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-    # create file in this folder
-    with open(folder_path + "/data.csv", 'w') as f:
-        f.write("Accelerometer X,")
-        f.write("Accelerometer Y,")
-        f.write("Accelerometer Z,")
-        f.write("Latitude,")
-        f.write("Longitude,")
-        f.write("Speed,")
-        f.write("Time\n")
+    # keeps forever in the loop until a keyboard interrupt is detected
+    try:
+        while True:
+            # gps signal not available or speed under 30km/h
+            if not my_gps.signal_validity or my_gps.speed < speed_limit:
+                continue
+            # irregularity detected! send request to server
+            if abs(my_accelerometer.accel_z) > accel_limit:
+                req_json = json.dumps({'latitude': my_gps.latitude, 'longitude': my_gps.longitude,
+                                       'accelerometer': my_accelerometer.accel_z, 'speed': my_gps.speed})
+                req_return = requests.post(api_url, data=req_json)
+                time.sleep(sleep_after_request)
 
-        # keeps forever in the loop until a keyboard interrupt is detected
-        try:
-            while True:
-                time_num = time.time()
-                time_str = "{:.5f}".format(time_num)
+            time.sleep(sleep_repeat)
 
-                f.write(str(my_accelerometer.accel_x) + ",")
-                f.write(str(my_accelerometer.accel_y) + ",")
-                f.write(str(my_accelerometer.accel_z) + ",")
-                f.write(str(my_gps.latitude) + ",")
-                f.write(str(my_gps.longitude) + ",")
-                f.write(str(my_gps.speed) + ",")
-                f.write(time_str + "\n")
-                time.sleep(0.01)
-        except KeyboardInterrupt:
-            run_event.clear()
-            my_gps.join()
-            my_accelerometer.join()
-            print "Closed all threads successfully!"
+    except KeyboardInterrupt:
+        run_event.clear()
+        my_gps.join()
+        my_accelerometer.join()
+        print "Closed all threads successfully!"

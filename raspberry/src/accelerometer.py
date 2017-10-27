@@ -139,7 +139,11 @@ class Accelerometer(Thread):
         self.set_accelerometer_scale(4)
 
         while self.run_event.is_set():
-            self.accel_x = round(self.read_word_2c(self.REG_ACCEL_XOUT_H) * self.scale / 32767., 5)
-            self.accel_y = round(self.read_word_2c(self.REG_ACCEL_YOUT_H) * self.scale / 32767., 5)
-            self.accel_z = round(self.read_word_2c(self.REG_ACCEL_ZOUT_H) * self.scale / 32767., 5)
+            try:
+                self.accel_x = round(self.read_word_2c(self.REG_ACCEL_XOUT_H) * self.scale / 32767., 5)
+                self.accel_y = round(self.read_word_2c(self.REG_ACCEL_YOUT_H) * self.scale / 32767., 5)
+                self.accel_z = round(self.read_word_2c(self.REG_ACCEL_ZOUT_H) * self.scale / 32767., 5)
+            except TypeError:  # if failed reading an register, just keep going and try again
+                pass
+
             time.sleep(0.01)
