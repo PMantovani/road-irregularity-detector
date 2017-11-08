@@ -41,6 +41,7 @@ class Main:
                 speed = my_gps.speed
 
                 self.print_log(abs_accel_z, signal_validity, longitude, latitude, speed)
+                time.sleep(self.SLEEP_REPEAT)
 
                 # gps signal not available or speed under 30km/h
                 if not signal_validity or speed < self.SPEED_LIMIT:
@@ -54,8 +55,6 @@ class Main:
                     print("*** Hole detected! HTTP Return: " + response.reason + " (" +
                           str(response.status_code) + ") ***")
                     time.sleep(self.SLEEP_AFTER_REQ)
-
-                time.sleep(self.SLEEP_REPEAT)
 
         except KeyboardInterrupt:
             run_event.clear()
