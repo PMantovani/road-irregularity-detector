@@ -25,7 +25,8 @@ if ($method === "POST") {
 
     if ($stmt = $mysqli->prepare($query)) {
 
-        $stmt->bind_param("sss", $input_json["latitude"], $input_json["longitude"], $input_json["accelerometer"]);
+        $stmt->bind_param("ssss", $input_json["latitude"], $input_json["longitude"],
+            $input_json["accelerometer"], $input_json["speed"], $input_json["reading_date"]);
         $stmt->execute();
         $stmt->close();
     }

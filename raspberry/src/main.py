@@ -1,4 +1,5 @@
 from __future__ import print_function
+from datetime import datetime
 import time
 import gps
 import accelerometer
@@ -50,7 +51,7 @@ class Main:
                 elif abs_accel_z > self.ACCEL_LIMIT:
                     req_json = json.dumps({'latitude': latitude, 'longitude': longitude,
                                            'accelerometer': abs_accel_z, 'speed': speed})
-                    headers = {'Content-Type': 'application/json'}
+                    headers = {'Content-Type': 'application/json', 'reading_date': str(datetime.now())}
                     response = requests.post(self.API_URL, data=req_json, headers=headers)
                     print("*** Hole detected! HTTP Return: " + response.reason + " (" +
                           str(response.status_code) + ") ***")
@@ -65,7 +66,7 @@ class Main:
     @staticmethod
     def print_header():
         print("|\tDetection Status\t|\tGPS Status\t|\tSpeed Threshold\t|\tAcceleration\t"
-              "|\tLatitude\t|\tLongitude\t|\tSpeed")
+              "|\tLatitude\t|\tLongitude\t|\tSpeed\t|\tTime")
 
     def print_log(self, acc, val, lat, lng, spd):
         if acc < self.ACCEL_LIMIT:
@@ -74,7 +75,7 @@ class Main:
             acc_status = "Detection"
 
         if val:
-            gps_status = "GPS Signal Valid"
+            gps_status = "GPS Signal OK"
         else:
             gps_status = "No GPS Signal"
 
@@ -83,8 +84,8 @@ class Main:
         else:
             spd_status = "Speed above threshold"
 
-        print("|\t" + acc_status + "\t|\t" + gps_status + "\t|\t" + spd_status + "\t|\t" + str(acc) + "\t|\t" +
-              str(lat) + "\t|\t" + str(lng) + "\t|\t" + str(spd))
+        print("|\t" + acc_status + "\t|\t" + gps_status + "\t|\t" + spd_status + "\t|\t" + str(acc)
+              + "\t|\t%.2f\t|\t%.2f\t|\t" + str(spd) % (lat, lon))
 
 
 # main entry point
