@@ -84,8 +84,8 @@ class Main:
         else:
             spd_status = "Speed above threshold"
 
-        print("|\t" + acc_status + "\t|\t" + gps_status + "\t|\t" + spd_status + "\t|\t" + acc + "\t|\t" +
-              lat + "\t|\t" + lng + "\t|\t" + spd)
+        print("|\t" + acc_status + "\t|\t" + gps_status + "\t|\t" + spd_status + "\t|\t" + str(acc) + "\t|\t" +
+              str(lat) + "\t|\t" + str(lng) + "\t|\t" + str(spd))
 
 
 # main entry point
