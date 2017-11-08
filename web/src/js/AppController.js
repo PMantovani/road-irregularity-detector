@@ -12,7 +12,7 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
         Map.replaceMarker(coordinates);
     };
 
-    $http.get("http://localhost:8080/api.php")
+    $http.get("http://192.168.25.18:8080/api.php")
         .then(function success(response) {
             self.detections = response.data;
             for (var i=0; i<self.detections.length; i++) {
