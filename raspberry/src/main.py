@@ -10,7 +10,7 @@ import json
 
 class Main:
     def __init__(self):
-        self.API_URL = 'http://localhost:8080/api.php'
+        self.API_URL = 'http://192.168.25.18:8080/api.php'
         self.ACCEL_SCALE = 8
         self.ACCEL_LIMIT = 4
         self.SPEED_LIMIT = 30
@@ -85,7 +85,7 @@ class Main:
             spd_status = "Speed above threshold"
 
         print("|\t" + acc_status + "\t|\t" + gps_status + "\t|\t" + spd_status + "\t|\t" + str(acc)
-              + "\t|\t%.2f\t|\t%.2f\t|\t" + str(spd) % (lat, lon))
+              + "\t|\t%.2f\t|\t%.2f\t|\t" + str(spd) % (lat, lng))
 
 
 # main entry point
