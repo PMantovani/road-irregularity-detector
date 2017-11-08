@@ -50,8 +50,9 @@ class Main:
                 # irregularity detected! send request to server
                 elif abs_accel_z > self.ACCEL_LIMIT:
                     req_json = json.dumps({'latitude': latitude, 'longitude': longitude,
-                                           'accelerometer': abs_accel_z, 'speed': speed})
-                    headers = {'Content-Type': 'application/json', 'reading_date': str(datetime.now())}
+                                           'accelerometer': abs_accel_z, 'speed': speed,
+                                           'reading_date': str(datetime.now())})
+                    headers = {'Content-Type': 'application/json'}
                     response = requests.post(self.API_URL, data=req_json, headers=headers)
                     print("*** Hole detected! HTTP Return: " + response.reason + " (" +
                           str(response.status_code) + ") ***")
@@ -85,7 +86,7 @@ class Main:
             spd_status = "Speed above threshold"
 
         print("|\t" + acc_status + "\t|\t" + gps_status + "\t|\t" + spd_status + "\t|\t" + str(acc)
-              + "\t|\t%.2f\t|\t%.2f\t|\t" + str(spd) % (lat, lng))
+              + "\t|\t{0:2.5f}\t|\t{1:2.5f}\t|\t".format(lat, lng) + str(spd) + "|\t|\t" + str(datetime.now()))
 
 
 # main entry point
