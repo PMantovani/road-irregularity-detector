@@ -1,9 +1,6 @@
-# noinspection PyUnresolvedReferences
-import smbus
-import time
-# noinspection PyUnresolvedReferences
 from threading import Thread
-
+import time
+import smbus
 
 class Accelerometer(Thread):
     def __init__(self, run_event):
@@ -124,7 +121,8 @@ class Accelerometer(Thread):
         else:
             return None
 
-        ret = self.write_bits(self.REG_ACCEL_CONFIG, config_bits, self.ACC_SCALE_START_BIT, self.ACC_SCALE_LENGTH)
+        ret = self.write_bits(self.REG_ACCEL_CONFIG, config_bits, self.ACC_SCALE_START_BIT,
+                              self.ACC_SCALE_LENGTH)
         self.scale = new_range
         return ret
 
@@ -140,9 +138,9 @@ class Accelerometer(Thread):
 
         while self.run_event.is_set():
             try:
-                self.accel_x = round(self.read_word_2c(self.REG_ACCEL_XOUT_H) * self.scale / 32767., 5)
-                self.accel_y = round(self.read_word_2c(self.REG_ACCEL_YOUT_H) * self.scale / 32767., 5)
-                self.accel_z = round(self.read_word_2c(self.REG_ACCEL_ZOUT_H) * self.scale / 32767., 5)
+                self.accel_x = round(self.read_word_2c(self.REG_ACCEL_XOUT_H)*self.scale/32767., 5)
+                self.accel_y = round(self.read_word_2c(self.REG_ACCEL_YOUT_H)*self.scale/32767., 5)
+                self.accel_z = round(self.read_word_2c(self.REG_ACCEL_ZOUT_H)*self.scale/32767., 5)
             except TypeError:  # if failed reading an register, just keep going and try again
                 pass
 

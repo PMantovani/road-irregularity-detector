@@ -1,9 +1,6 @@
-# noinspection PyUnresolvedReferences
-import serial
-# noinspection PyUnresolvedReferences
-import sys
-# noinspection PyUnresolvedReferences
 from threading import Thread
+import sys
+import serial
 
 
 class GPS(Thread):
