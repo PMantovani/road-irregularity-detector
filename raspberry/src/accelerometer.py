@@ -23,6 +23,11 @@ class Accelerometer(Thread):
         self.REG_ACCEL_ZOUT_H = 0x3f
         self.REG_ACCEL_CONFIG = 0x1c
 
+        self.GYRO_CONFIG = 0x1b
+        self.GYRO_XOUT_H = 0x43
+        self.GYRO_YOUT_H = 0x45
+        self.GYRO_ZOUT_H = 0x47
+
         # other useful constants
         self.ACC_SCALE_LENGTH = 2
         self.ACC_SCALE_START_BIT = 4

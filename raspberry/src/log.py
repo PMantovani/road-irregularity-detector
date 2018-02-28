@@ -1,9 +1,9 @@
 """ main module """
 from __future__ import print_function
 import threading
-import gps
-import accelerometer
-import file_write
+from gps import GPS 
+from MPUThread import MPUThread
+from file_writer import FileWriter
 
 class Main(object):
     """ main class """
@@ -14,17 +14,16 @@ class Main(object):
         self.run_event.set()
 
         # thread objects
-        self.my_gps = gps.GPS(self.run_event)
-        self.my_accelerometer = accelerometer.Accelerometer(self.run_event)
-        self.my_file_write = file_write.FileWrite(self.run_event, self.my_gps,
-                                                  self.my_accelerometer, self)
+        self.gps = GPS(self.run_event)
+        self.mpu = MPUThread(self.run_event)
+        self.file_writer = FileWriter(self.run_event, self.gps, self.mpu, self)
 
     def main(self):
         """ executes main block """
 
-        # start gps and accelerometer threads
-        self.my_gps.start()
-        self.my_accelerometer.start()
+        # start gps and mpu threads
+        self.gps.start()
+        self.mpu.start()
 
         try:
             while self.status == 0:
@@ -34,7 +33,7 @@ class Main(object):
                     return
 
             # starts logging to file
-            self.my_file_write.start()
+            self.file_writer.start()
 
             while True:
                 reading = self.read_key()
@@ -49,6 +48,7 @@ class Main(object):
     def read_key(self):
         """ reads an input from stdin and returns it. Also verifies if it's between 1 and 3
             and assigns to status """
+
         read_input = raw_input('Enter road condition (1-bad, 2-regular, 3-good, q-quit): ')
         if read_input == '1' or read_input == '2' or read_input == '3':
             self.status = read_input
@@ -56,16 +56,19 @@ class Main(object):
             print('Invalid value. Enter a value from 1 to 3.')
         return read_input
 
+    def getStatus(self):
+        return self.status
+
     def kill_threads(self):
         """ kill all threads """
+
         self.run_event.clear()
-        self.my_gps.join()
-        self.my_accelerometer.join()
+        self.gps.join()
+        self.mpu.join()
         if self.status != 0:
-            self.my_file_write.join()
+            self.file_writer.join()
         print('Closed all threads successfully')
         return
-
 
 
 if __name__ == "__main__":

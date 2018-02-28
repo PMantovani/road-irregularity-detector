@@ -54,6 +54,15 @@ class GPS(Thread):
 
         return self.latitude, self.longitude, self.speed
 
+    def getLatitude(self):
+        return self.latitude
+
+    def getLongitude(self):
+        return self.longitude
+
+    def getSpeed(self):
+        return self.speed
+
     def run(self):
         try:
             my_serial = serial.Serial(self.port, self.speed, timeout=5)
