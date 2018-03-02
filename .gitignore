@@ -6,3 +6,4 @@ web/src/node_modules/
 web/src/Gruntfile.js
 web/dist/
 .vscode/
+data/

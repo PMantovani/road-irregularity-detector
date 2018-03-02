@@ -13,11 +13,11 @@ class FileWriter(Thread):
 
     def run(self):
         # creates folder if it doesn't exist
-        folder_path = "../data"
+        folder_path = "../../data"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         # create file in this folder
-        with open(folder_path + "/data.csv", 'w') as f:
+        with open(folder_path + "/raw_data.csv", 'w') as f:
             f.write("Road Status,")
             f.write("Accelerometer X,")
             f.write("Accelerometer Y,")
