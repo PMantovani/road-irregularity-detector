@@ -47,5 +47,3 @@ class MPUThread(Thread):
                 self.gyro_z = self.mpu.get_gyro_z()
             except TypeError:  # if failed reading an register, just keep going and try again
                 pass
-
-            time.sleep(0.01)

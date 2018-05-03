@@ -22,7 +22,7 @@ class MPU6050(I2CDevice):
         self.ACCEL_ZOUT_H = 0x3f
 
         ### GYROSCOPE REGISTERS ###
-        self.GYRO_CONFIG = 0x1b # register for acc config
+        self.GYRO_CONFIG = 0x1b # register for gyro config
         self.GYRO_SCALE_START_BIT = 4 # first bit of the scale part of the configuration
         self.GYRO_SCALE_LENGTH = 2 # length in bits of scale configuration 
         self.GYRO_XOUT_H = 0x43 # registers for gyro measurements

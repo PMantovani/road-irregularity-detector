@@ -16,8 +16,8 @@ class FileWriter(Thread):
         folder_path = "../../data"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        # create file in this folder
-        with open(folder_path + "/raw_data.csv", 'w') as f:
+        # create file in this folder, setting buffer to 1MB
+        with open(folder_path + "/raw_data.csv", 'w', buffering = 1048576) as f:
             f.write("Road Status,")
             f.write("Accelerometer X,")
             f.write("Accelerometer Y,")
@@ -48,4 +48,4 @@ class FileWriter(Thread):
                 f.write(str(self.gps.getLongitude()) + ",")
                 f.write(str(self.gps.getSpeed()) + ",")
                 f.write(time_str + "\n")
-                time.sleep(0.05)
+                time.sleep(0.001)

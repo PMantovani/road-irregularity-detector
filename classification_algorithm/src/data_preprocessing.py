@@ -7,14 +7,14 @@ continuous_arr = []
 out_arr = []
 
 with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
-          'road-irregularity-detector\\data\\raw_data.csv', 'r') as raw_data:
+          'road-irregularity-detector\\data\\quatro_barras.csv', 'r') as raw_data:
     csv_reader = csv.reader(raw_data)
 
     for i, row in enumerate(csv_reader):
         if i == 0:
             continue # this will skip header line
         elif i == 1:
-            start_time = int(row[10]) # set our initial start_time
+            start_time = float(row[10]) # set our initial start_time
 
         road_status = int(row[0])
         acc_x = float(row[1])
@@ -32,7 +32,7 @@ with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
             mean = np.mean(np_array, axis=0)
 
             out_arr.append([round(mean[0]), mean[1], variance[1], mean[2],
-                            variance[2], mean[3], variance[3]])
+                            variance[2], mean[3], variance[3], row[7], row[8]])
 
             continuous_arr = []
             start_time = float(row[10])
@@ -53,10 +53,13 @@ with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
     out_file.write('Gyroscope Mean,')
     out_file.write('Gyroscope Variance,')
     out_file.write('Speed Mean,')
-    out_file.write('Speed Variance\n')
+    out_file.write('Speed Variance,')
+    out_file.write('Latitude,')
+    out_file.write('Longitude\n')
 
     for i, row in enumerate(out_arr):
         out_file.write(str(row[0]) + ',' + str(row[1]) + ',' + str(row[2]) + ',' +
-                       str(row[3]) + ',' + str(row[4]) + ',' + str(row[5]) + ',' + str(row[6]))
+                       str(row[3]) + ',' + str(row[4]) + ',' + str(row[5]) + ',' + 
+                       str(row[6]) + ',' + str(row[7]) + ',' + str(row[8]))
         if i != len(out_arr)-1:
             out_file.write('\n') # print new line in all rows except last
