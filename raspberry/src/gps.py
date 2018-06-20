@@ -7,11 +7,10 @@ class GPS(Thread):
     def is_valid(self):
         return self.signal_validity
 
-    def __init__(self, run_event):
+    def __init__(self):
         Thread.__init__(self)
         self.port = '/dev/ttyS0'
         self.speed = 9600
-        self.run_event = run_event
         self.signal_validity = False
         self.latitude = 0.
         self.longitude = 0.
@@ -65,12 +64,13 @@ class GPS(Thread):
 
     def run(self):
         try:
-            my_serial = serial.Serial(self.port, self.speed, timeout=5)
+            my_serial = serial.Serial(self.port, self.speed)
 
-            while self.run_event.is_set():
+            while True:
                 data = my_serial.readline()
                 if data.startswith("$GPRMC"):
                     self.parse_gprmc(data)
 
         except Exception as e:
-            sys.stderr.write('Error reading serial port %s: %s\n' % (type(e).__name__, e))
+            self.run_event.clear()
+            # sys.stderr.write('Erro reading serial port %s: %s\n' % (type(e).__name__, e))

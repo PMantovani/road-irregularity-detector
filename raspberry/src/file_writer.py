@@ -4,9 +4,8 @@ import time
 
 class FileWriter(Thread):
 
-    def __init__(self, run_event, gps, mpu, my_input):
+    def __init__(self, gps, mpu, my_input):
         Thread.__init__(self)
-        self.run_event = run_event
         self.mpu = mpu
         self.gps = gps
         self.my_input = my_input
@@ -30,7 +29,7 @@ class FileWriter(Thread):
             f.write("Speed,")
             f.write("Time\n")
 
-            while self.run_event.is_set():
+            while True:
                 time_num = time.time()
                 time_str = "{:.5f}".format(time_num)
 

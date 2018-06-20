@@ -3,9 +3,8 @@ from threading import Thread
 import time
 
 class MPUThread(Thread):
-    def __init__(self, run_event):
+    def __init__(self):
         Thread.__init__(self)
-        self.run_event = run_event
         self.mpu = MPU6050()
 
         # offset constants
@@ -37,7 +36,7 @@ class MPUThread(Thread):
         self.mpu.set_accelerometer_scale(16)
         self.mpu.set_gyro_scale(1000)
 
-        while self.run_event.is_set():
+        while True:
             try:
                 self.accel_x = self.mpu.get_accelerometer_x()
                 self.accel_y = self.mpu.get_accelerometer_y()
@@ -45,5 +44,6 @@ class MPUThread(Thread):
                 self.gyro_x = self.mpu.get_gyro_x()
                 self.gyro_y = self.mpu.get_gyro_y()
                 self.gyro_z = self.mpu.get_gyro_z()
+                time.sleep(0.001) # 1ms between measurements
             except TypeError:  # if failed reading an register, just keep going and try again
                 pass
