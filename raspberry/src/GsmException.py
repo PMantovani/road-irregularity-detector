@@ -1,0 +1,2 @@
+class GsmException(Exception):
+    pass

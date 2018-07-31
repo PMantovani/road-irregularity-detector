@@ -2,7 +2,7 @@ from __future__ import print_function
 from datetime import datetime
 import time
 import gps
-import accelerometer
+import MPUThread
 import threading
 import requests
 import json
@@ -10,22 +10,21 @@ import json
 
 class Main:
     def __init__(self):
-        self.API_URL = 'http://192.168.25.18:8080/api.php'
+        self.API_URL = 'http://192.168.137.1/api.php'
         self.ACCEL_SCALE = 8
         self.ACCEL_LIMIT = 4
         self.SPEED_LIMIT = 30
         self.SLEEP_AFTER_REQ = 10
         self.SLEEP_REPEAT = 0.01
 
-        run_event = threading.Event()
-        run_event.set()
-
         # starts gps thread
-        my_gps = gps.GPS(run_event)
+        my_gps = gps.GPS()
+        my_gps.setDaemon(True)
         my_gps.start()
 
         # starts accelerometer thread
-        my_accelerometer = accelerometer.Accelerometer(run_event)
+        my_accelerometer = MPUThread.MPUThread()
+        my_accelerometer.setDaemon(True)
         my_accelerometer.start()
         my_accelerometer.set_accelerometer_scale(self.ACCEL_SCALE)
 
