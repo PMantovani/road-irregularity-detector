@@ -61,8 +61,9 @@ class MapService {
         this.detectionsPolylines = [];
     };
 
-    addDetection(start_coordinates, end_coordinates, quality) {
-        var path = [start_coordinates, end_coordinates];
+    addDetection(detection) {
+        var quality = detection.quality;
+        var path = detection.path;
 
         if (parseInt(quality) === 1) {
             var lineColor = '#FF0000';
@@ -79,11 +80,37 @@ class MapService {
             strokeWeight: 5
         });
 
+        this.attachInfoWindow(polyline, detection);
+
         polyline.setMap(this.map);
         this.detectionsPolylines.push(polyline);
     }
 
-    addEventOnBoundChanged(callback, showOnlyBadRoads, dateRange) {
+    attachInfoWindow(element, detectionInfo) {
+        if (detectionInfo.quality < 3) {
+            var quality = 'Bad';
+        }
+        else {
+            quality = 'Good';
+        }
+        var reading_date = new Date(detectionInfo.reading_date);
+        var contentHtml = 'Road Quality:      ' + quality + '</br>' +
+                          'Sensor Id:         ' + detectionInfo.sensor_id + '</br>' +
+                          'Mean Speed:        ' + detectionInfo.speed + ' km/h</br>' +
+                          'Date of Detection: ' + reading_date.toUTCString();
+
+        var infoWindow = new google.maps.InfoWindow({
+            content: contentHtml
+        });
+
+        element.addListener('click', function(e) {
+            var clickLatLng = e.latLng;
+            infoWindow.setPosition(clickLatLng);
+            infoWindow.open(element.get('map'));    
+        });
+    }
+
+    addEventOnBoundChanged(callback) {
         google.maps.event.addListener(this.map, "idle", callback);
     }
 }

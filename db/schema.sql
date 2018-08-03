@@ -16,3 +16,17 @@ CREATE TABLE IF NOT EXISTS detections (
   created_date      DATETIME NOT NULL,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS detections_path (
+  id            BIGINT(12) UNSIGNED AUTO_INCREMENT,
+  detection_id  BIGINT(12) UNSIGNED,
+  path_counter  BIGINT(12) UNSIGNED NOT NULL,
+  latitude      FLOAT(11,8) NOT NULL,
+  longitude     FLOAT(11,8) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (detection_id, path_counter),
+  FOREIGN KEY (detection_id) 
+    REFERENCES detections(id) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE 
+);

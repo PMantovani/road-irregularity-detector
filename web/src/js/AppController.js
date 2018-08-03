@@ -42,12 +42,7 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
 
             Map.clearDetections(self.dateRange);
             for (var i=0; i<self.detections.length; i++) {
-                var start_coordinates = { lat: parseFloat(self.detections[i].start_latitude),
-                                          lng: parseFloat(self.detections[i].start_longitude)};
-                var end_coordinates = { lat: parseFloat(self.detections[i].end_latitude),
-                                        lng: parseFloat(self.detections[i].end_longitude)};
-
-                Map.addDetection(start_coordinates, end_coordinates, self.detections[i].quality);
+                Map.addDetection(self.detections[i]);
             }
         }, function error(response) {
            console.log("Error while fetching the data");
