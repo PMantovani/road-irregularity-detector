@@ -31,27 +31,28 @@ with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
                 to_training_data = True
         first_row = False
 
-    classifier = svm.SVC(gamma=0.00001, C=1000000, kernel='rbf')
-    # classifier = svm.SVC(kernel='linear')
+    # classifier = svm.SVC(gamma=0.00001, C=10000, kernel='rbf')
+    classifier = svm.SVC(kernel='linear')
     classifier.fit(training_data, training_classes)
     predicted = classifier.predict(test_data)
 
     error_matrix = {}
-    # error_matrix[1] = [0, 0]
-    # error_matrix[2] = [0, 0] 
-    error_matrix[1] = [0, 0, 0]
-    error_matrix[2] = [0, 0, 0] 
-    error_matrix[3] = [0, 0, 0]
+    error_matrix[1] = [0, 0]
+    error_matrix[2] = [0, 0] 
+    # error_matrix[1] = [0, 0, 0]
+    # error_matrix[2] = [0, 0, 0] 
+    # error_matrix[3] = [0, 0, 0]
 
     for i in xrange(len(test_classes)):
         error_matrix[int(test_classes[i])][int(predicted[i])-1] += 1
 
     for i in xrange(len(error_matrix)):
         index = i+1
-        total = error_matrix[index][0] + error_matrix[index][1] + error_matrix[index][2]
-        # total = error_matrix[index][0] + error_matrix[index][1]
+        # total = error_matrix[index][0] + error_matrix[index][1] + error_matrix[index][2]
+        total = error_matrix[index][0] + error_matrix[index][1]
         if total != 0:
             for j in xrange(len(error_matrix[index])):
                 error_matrix[index][j] *= 100./total
+                error_matrix[index][j] = round(error_matrix[index][j], 2)
 
     print error_matrix

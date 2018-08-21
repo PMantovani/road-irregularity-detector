@@ -18,8 +18,8 @@
         <md-toolbar>
             <h1 class="md-toolbar-tools">Vias Irregulares</h1>
         </md-toolbar>
-        <md-content>
-            
+
+        <md-content>    
             <div layout-padding>
                 <md-switch ng-model="ctrl.showOnlyBadRoads" aria-label="Show Only Bad Roads" class="md-primary"
                            ng-change="ctrl.onBadRoadSwitchChange()">
@@ -27,35 +27,15 @@
                 </md-switch>
 
                 <md-radio-group ng-model="ctrl.dateRange" ng-change="ctrl.onBadRoadSwitchChange()">
-                    <md-radio-button value="1" class="md-primary">Show last month</md-radio-button>
-                    <md-radio-button value="3" class="md-primary">Show last three months</md-radio-button>
-                    <md-radio-button value="6" class="md-primary">Show last six months</md-radio-button>
+                    <md-radio-button value="1" class="md-primary">Show last week</md-radio-button>
+                    <md-radio-button value="2" class="md-primary">Show last two weeks</md-radio-button>
+                    <md-radio-button value="4" class="md-primary">Show last four weeks</md-radio-button>
                 </md-radio-group>
             </div>
 
-            <p hide show-gt-md layout-padding>
-                Através de sensores e sistemas embarcados, as vias nos locais abaixo foram detectadas como irregulares,
-                possuindo buracos que podem potencialmente danificar o seu veículo.
-            </p>
-
-            <md-list>
-                <!-- <md-list-item class="md-3-line"
-                              ng-repeat="detection in ctrl.detections"
-                              ng-click="ctrl.findInMap(detection.latitude, detection.longitude)">
-                    <div class="md-list-item-text" layout="row" layout-align="space-between" layout-padding>
-                        <div>
-                            <p>Lat: {{ detection.latitude }}</p>
-                            <p>Lng: {{ detection.longitude }}</p>
-                        </div>
-                        <div flex layout="column" layout-align="start end">
-                            <p>Qualidade do Pavimento: {{ detection.quality }}</p>
-                            <p>{{ detection.reading_date | formatDate }}</p>
-                        </div>
-                    </div>
-                    <md-divider></md-divider>
-                </md-list-item> -->
-                <md-divider></md-divider>
-            </md-list>
+            <div layout-padding>
+                <rm-sensor ng-repeat="sensor in ctrl.sensors" sensor="sensor" on-click="ctrl.onSensorClick(lat, lng)"></rm-sensor>
+            </div>
         </md-content>
     </md-sidenav>
 
@@ -73,5 +53,6 @@
 <script src="node_modules/angular-material/angular-material.min.js"></script>
 <script src="js/MapService.js"></script>
 <script src="js/Application.js"></script>
+<script src="js/RmSensor.js"></script>
 <script src="js/AppController.js"></script>
 </html>

@@ -1,5 +1,6 @@
 app.controller("AppController", ["$scope", "$http", "Map", function($scope, $http, Map) {
     var self = this;
+    self.sensors = [];
     self.detections = [];
     self.dateRange = "1";
     self.showOnlyBadRoads = false;
@@ -18,17 +19,17 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
         self.requestDetections();
     };
 
-    self.calculateQueryDateTime = function(dateRange) {
-        const secsInAMonth = (30*24*60*60*1000);
+    self.calculateQueryDateTime = function(numberOfWeeks) {
+        const secsInAWeek = (7*24*60*60*1000);
         var fromDate = new Date();
-        fromDate.setTime(fromDate.getTime() - secsInAMonth * parseInt(dateRange));
+        fromDate.setTime(fromDate.getTime() - secsInAWeek * parseInt(numberOfWeeks));
 
         return fromDate.toISOString();
     }
 
     self.requestDetections = function() {
         var bounds = Map.getMapBounds();
-        var url = "http://localhost/api.php?north=" + bounds.north +
+        var url = "http://localhost/api.php/detections?north=" + bounds.north +
                                            "&south=" + bounds.south + 
                                            "&west="  + bounds.west +
                                            "&east="  + bounds.east;
@@ -49,6 +50,21 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
         });
     };
 
+    self.requestSensors = function() {
+        var url = "http://localhost/api.php/sensors";
+
+        $http.get(url).then(function success(response) {
+            self.sensors = response.data;
+        }, function error(response) {
+            console.log("Error while fetching the data: " + response.data);
+        });
+    };
+
+    self.onSensorClick = function(lat, lng) {
+        Map.replaceMarker({lat: lat, lng: lng});
+    }
+
+    self.requestSensors();
     Map.addEventOnBoundChanged(self.requestDetections);
 
 }]);

@@ -27,16 +27,16 @@ class RoadManagerDB {
         foreach($filters as $key => $value) {
             switch ($key) {
                 case 'south':
-                    $query .= 'AND start_latitude >= ? ';
+                    $query .= 'AND latitude >= ? ';
                     break;
                 case 'north':
-                    $query .= 'AND start_latitude <= ? ';
+                    $query .= 'AND latitude <= ? ';
                     break;
                 case 'west':
-                    $query .= 'AND start_longitude >= ? ';
+                    $query .= 'AND longitude >= ? ';
                     break;
                 case 'east':
-                    $query .= 'AND start_longitude <= ? ';
+                    $query .= 'AND longitude <= ? ';
                     break;
                 case 'onlyBadRoads':
                     $query .= 'AND quality < ? ';
@@ -52,7 +52,7 @@ class RoadManagerDB {
             $params[] = $value;
             $num_params .= "s";
         }
-        $query .= 'LIMIT 5000;';
+        $query .= 'LIMIT 50000;';
 
         // Remove aditional AND right after the WHERE clause
         $query = str_replace('WHERE AND', 'WHERE', $query);
@@ -118,6 +118,16 @@ class RoadManagerDB {
 
         $stmt->close();
         return true;
+    }
+
+    public function getSensors() {
+        $query = 'SELECT * from sensors;';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        if($result = $stmt->get_result()) {
+            return $result->fetch_all(MYSQLI_ASSOC);
+        }
     }
 
     private function formatDetections(array $detections): array {

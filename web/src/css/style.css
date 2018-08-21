@@ -6,3 +6,7 @@
 md-sidenav {
     width: 450px;
 }
+
+rm-sensor {
+    cursor: pointer;
+}

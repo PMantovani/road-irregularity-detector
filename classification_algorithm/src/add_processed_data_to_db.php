@@ -23,7 +23,7 @@ while (($row = fgetcsv($file, 1000)) !== NULL) {
     $data['speed'] = $row[13];
     $data['course'] = 13;
     $data['quality'] = $row[0];
-    $data['reading_date'] = date("Y-m-d H:i:s");
+    $data['reading_date'] = date('c', $row[19]);
 
     $id = $api->insertDetection($data);
     $api->insertDetectionPath($id, $data['start_latitude'], $data['start_longitude'], 
@@ -31,5 +31,5 @@ while (($row = fgetcsv($file, 1000)) !== NULL) {
     
     echo $counter . ' ';
     $counter++;
-    sleep(0.12);
+    // sleep(0.12);
 }

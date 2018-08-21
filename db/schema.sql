@@ -2,6 +2,16 @@ CREATE DATABASE IF NOT EXISTS roadmanager;
 
 USE roadmanager;
 
+CREATE TABLE IF NOT EXISTS sensors (
+  id         BIGINT(12) UNSIGNED AUTO_INCREMENT,
+  name       VARCHAR(50),
+  last_seen  DATETIME NOT NULL,
+  last_lat   FLOAT(11,8),
+  last_lng   FLOAT(11,8),
+  created_on DATETIME NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS detections (
   id                BIGINT(12) UNSIGNED AUTO_INCREMENT,
   sensor_id         BIGINT(12) UNSIGNED,
@@ -14,7 +24,11 @@ CREATE TABLE IF NOT EXISTS detections (
   quality           SMALLINT NOT NULL,
   reading_date      DATETIME NOT NULL,
   created_date      DATETIME NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  FOREIGN KEY (sensor_id) 
+    REFERENCES sensors(id) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE 
 );
 
 CREATE TABLE IF NOT EXISTS detections_path (

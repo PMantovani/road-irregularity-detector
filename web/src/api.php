@@ -9,6 +9,7 @@ require_once('RoadManagerDB.php');
 require_once('RoadsGoogleApi.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
+$path = explode('/', trim($_SERVER['PATH_INFO'],'/'))[0];
 $input = file_get_contents('php://input');
 $input_json = json_decode($input, true);
 
@@ -21,9 +22,9 @@ else if($method !== "GET" && $method !== "POST") {
     exit();
 }
 
+$roadManagerDb = new RoadManagerDB();
 
 if ($method === "POST") {
-    $roadManagerDb = new RoadManagerDB();
     $id = $roadManagerDb->insertDetection($input_json);
     $roadManagerDb->insertDetectionPath($id, $input_json['start_latitude'], $input_json['start_longitude'],
                                              $input_json['end_latitude'],   $input_json['end_longitude']);
@@ -34,11 +35,14 @@ if ($method === "POST") {
 
 
 else if ($method === "GET") {
+    if ($path === 'detections') {
+        $output = $roadManagerDb->getDetections($_GET);
+    }
+    else if ($path === 'sensors') {
+        $output = $roadManagerDb->getSensors();
+    }
 
-    $roadManagerDb = new RoadManagerDB();
-    $detections = $roadManagerDb->getDetections($_GET);
-
-    $json = json_encode($detections);
+    $json = json_encode($output);
     header("Content-Type: application/json");
     echo $json;
 }

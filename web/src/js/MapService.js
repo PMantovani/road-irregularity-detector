@@ -94,10 +94,10 @@ class MapService {
             quality = 'Good';
         }
         var reading_date = new Date(detectionInfo.reading_date);
-        var contentHtml = 'Road Quality:      ' + quality + '</br>' +
-                          'Sensor Id:         ' + detectionInfo.sensor_id + '</br>' +
-                          'Mean Speed:        ' + detectionInfo.speed + ' km/h</br>' +
-                          'Date of Detection: ' + reading_date.toUTCString();
+        var contentHtml = '<p>Road Quality:      ' + quality + '</p>' +
+                          '<p>Sensor Id:         ' + detectionInfo.id + '</p>' +
+                          '<p>Mean Speed:        ' + detectionInfo.speed + ' km/h</p>' +
+                          '<p>Date of Detection: ' + reading_date.toUTCString() + '</p>';
 
         var infoWindow = new google.maps.InfoWindow({
             content: contentHtml
