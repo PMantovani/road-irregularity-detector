@@ -1,6 +1,7 @@
 from sklearn import svm
 import csv
 import numpy as np
+import pickle
 
 training_data = []
 training_classes = []
@@ -56,3 +57,6 @@ with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
                 error_matrix[index][j] = round(error_matrix[index][j], 2)
 
     print error_matrix
+
+    # save model to file
+    pickle.dump(classifier, open('../../data/model.sav', 'wb'))
