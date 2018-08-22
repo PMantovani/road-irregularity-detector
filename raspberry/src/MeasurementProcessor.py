@@ -49,7 +49,7 @@ class MeasurementProcessor(object):
         return [mean[0], variance[0], mean[1], variance[1], mean[2], variance[2],
                 mean[3], variance[3], mean[4], variance[4], mean[5], variance[5],
                 mean[6], variance[6], self.start_latitude, self.start_longitude,
-                self.latest_latitude, self.latest_longitude, time.time() ]
+                self.latest_latitude, self.latest_longitude, time.time()]
 
     def __reset_bufer(self):
         self.measurements = []
