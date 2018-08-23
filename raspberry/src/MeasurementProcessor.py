@@ -16,11 +16,11 @@ class MeasurementProcessor(object):
         self.latest_latitude = -1
         self.latest_longitude = -1
 
-    def add_measurement(self, measurements):
-        speed = measurements[6]
-        gps_signal_validity = measurements[9]
-        latitude = measurements[7]
-        longitude = measurements[8]
+    def add_measurement(self, single_measurement):
+        speed = single_measurement[6]
+        gps_signal_validity = single_measurement[9]
+        latitude = single_measurement[7]
+        longitude = single_measurement[8]
 
         if speed < MeasurementProcessor.SPEED_LIMIT or not gps_signal_validity:
             self.__reset_bufer()
@@ -31,7 +31,7 @@ class MeasurementProcessor(object):
             self.start_latitude = latitude
             self.start_longitude = longitude
 
-        self.measurements.append(self.measurements)
+        self.measurements.append(single_measurement)
         self.end_time = time.time()
         self.latest_latitude = latitude
         self.latest_longitude = longitude

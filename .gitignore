@@ -7,3 +7,5 @@ web/src/Gruntfile.js
 web/dist/
 .vscode/
 data/
+*/*.pyc
+*.pyc
