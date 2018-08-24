@@ -6,6 +6,7 @@ from gps import GPS
 from MPUThread import MPUThread
 from gpiozero import LED
 from MeasurementProcessor import MeasurementProcessor
+import numpy as np
 
 class Main(object):
     """ main class """
@@ -52,7 +53,7 @@ class Main(object):
                 measurements_output = self.measurements.get_processed_output()
                 indicators = measurements_output[:13]
 
-                road_quality = self.svm.predict(indicators)
+                road_quality = self.svm.predict(np.reshape(indicators, (1, -1)))
 
                 if road_quality == 1:
                     self.bad_led.on()
