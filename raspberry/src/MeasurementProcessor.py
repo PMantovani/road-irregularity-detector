@@ -31,7 +31,7 @@ class MeasurementProcessor(object):
             self.start_latitude = latitude
             self.start_longitude = longitude
 
-        self.measurements.append(single_measurement)
+        self.measurements.append(single_measurement[:9])
         self.end_time = time.time()
         self.latest_latitude = latitude
         self.latest_longitude = longitude
