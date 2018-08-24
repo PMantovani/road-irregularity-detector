@@ -29,7 +29,7 @@ class Main(object):
         self.bad_led = LED(22)
         self.turn_on_all_leds()
 
-        self.svm = pickle.load(open('../../data/model.sav', 'rb'))
+        self.svm = pickle.load(open('../../data/model_3_qualities.sav', 'rb'))
         self.measurements = MeasurementProcessor()
 
     def main(self):
@@ -51,9 +51,9 @@ class Main(object):
                     self.measurements.add_measurement(measurement_unit)
 
                 measurements_output = self.measurements.get_processed_output()
-                indicators = measurements_output[:13]
+                indicators = np.reshape(measurements_output[:14], (1, -1))
 
-                road_quality = self.svm.predict(np.reshape(indicators, (1, -1)))
+                road_quality = self.svm.predict(indicators)[0]
 
                 if road_quality == 1:
                     self.bad_led.on()
