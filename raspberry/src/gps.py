@@ -72,5 +72,4 @@ class GPS(Thread):
                     self.parse_gprmc(data)
 
         except Exception as e:
-            self.run_event.clear()
-            # sys.stderr.write('Erro reading serial port %s: %s\n' % (type(e).__name__, e))
+            return
