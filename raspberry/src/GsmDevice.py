@@ -6,6 +6,20 @@ class GsmDevice(object):
     def __init__(self, serial):
         self.serial = serial
 
+    def enable_gps(self):
+        self.send_and_check('AT+CGNSPWR=1')
+        self.send_and_check('AT+CGNSIPR=115200')
+
+    def get_gps_info(self):
+        self.send_and_read('AT+CGNSINF')
+        whole_sentence = self.serial.readline()
+        if whole_sentence == "ERROR\r\n":
+            raise GsmException
+
+        gps_sentence = whole_sentence.replace('+CGNSINF: ', '')
+        split_values = gps_sentence.split(',')
+        return split_values[1], split_values[3], split_values[4], split_values[6], split_values[7]
+
     def send_http(self, httpConnection, apnConfiguration):
 
         if not self.has_ip_address():
