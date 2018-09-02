@@ -15,6 +15,8 @@ class GsmDevice(object):
         whole_sentence = self.serial.readline()
         if whole_sentence == "ERROR\r\n":
             raise GsmException
+        self.serial.readline()
+        self.serial.readline()
 
         gps_sentence = whole_sentence.replace('+CGNSINF: ', '')
         split_values = gps_sentence.split(',')
