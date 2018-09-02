@@ -48,7 +48,8 @@ class Main(object):
 
                     measurement_unit = [acc_x, acc_y, acc_z, gyr_x, gyr_y, gyr_z,
                                         speed, latitude, longitude, gps_validity]
-                    self.measurements.add_measurement(measurement_unit)
+                    if not self.measurements.add_measurement(measurement_unit):
+                        self.turn_off_all_leds()
 
                 measurements_output = self.measurements.get_processed_output()
                 indicators = np.reshape(measurements_output[:14], (1, -1))

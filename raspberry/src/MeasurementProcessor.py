@@ -24,7 +24,7 @@ class MeasurementProcessor(object):
 
         if speed < MeasurementProcessor.SPEED_LIMIT or not gps_signal_validity:
             self.__reset_bufer()
-            return
+            return -1
 
         if not self.measurements:
             self.start_time = time.time()
@@ -35,6 +35,7 @@ class MeasurementProcessor(object):
         self.end_time = time.time()
         self.latest_latitude = latitude
         self.latest_longitude = longitude
+        return 0
 
     def is_buffer_full(self):
         return (self.end_time - self.start_time) > MeasurementProcessor.TOTAL_SAMPLING_TIME
