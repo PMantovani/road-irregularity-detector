@@ -6,6 +6,8 @@ class ContinuousTransformer(object):
     def __init__(self):
         self.quality = 0
         self.summary_array = []
+        self.max_means = [0] * 7
+        self.max_variances = [0] * 7
         self.continuous_readings = []
         self.start_time = 0
         self.times_called = 0
@@ -49,6 +51,25 @@ class ContinuousTransformer(object):
 
     def get_summary_array(self):
         return self.summary_array
+        # result = []
+        # for row in self.summary_array:
+        #     row[1] /= self.max_means[0]
+        #     row[2] /= self.max_variances[0]
+        #     row[3] /= self.max_means[1]
+        #     row[4] /= self.max_variances[1]
+        #     row[5] /= self.max_means[2]
+        #     row[6] /= self.max_variances[2]
+        #     row[7] /= self.max_means[3]
+        #     row[8] /= self.max_variances[3]
+        #     row[9] /= self.max_means[4]
+        #     row[10] /= self.max_variances[4]
+        #     row[11] /= self.max_means[5]
+        #     row[12] /= self.max_variances[5]
+        #     row[13] /= self.max_means[6]
+        #     row[14] /= self.max_variances[6]
+        #     result.append(row)
+
+        # return result
 
     def __reset_continuous(self):
         self.quality = 0
@@ -58,6 +79,14 @@ class ContinuousTransformer(object):
         np_array = np.array(self.continuous_readings)
         variance = np.var(np_array, axis=0)
         mean = np.mean(np_array, axis=0)
+
+        # for i in xrange(len(self.max_means)):
+        #     if i == 6:
+        #         self.max_means[i] = max(self.max_means[i], abs(mean[9]))
+        #         self.max_variances[i] = max(self.max_variances[i], abs(variance[9]))
+        #     else:
+        #         self.max_means[i] = max(self.max_means[i], abs(mean[i+1]))
+        #         self.max_variances[i] = max(self.max_variances[i], abs(variance[i+1]))
 
         self.summary_array.append(
             [mean[0], mean[1], variance[1], mean[2], variance[2], mean[3], variance[3],

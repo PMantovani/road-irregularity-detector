@@ -40,4 +40,7 @@ if (len(x_axis_regular) > 0):
     ax.plot(x_axis_regular, y_axis_regular, 'yo')
 if (len(x_axis_bad) > 0):
     ax.plot(x_axis_bad, y_axis_bad, 'ro')
+plt.xlabel('Velocidade media (km/h)')
+plt.ylabel('Variancia do eixo Z do acelerometro (g^2)')
+plt.legend(['Bom', 'Regular', 'Ruim'])
 plt.show()

@@ -36,7 +36,7 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
         if (self.showOnlyBadRoads) {
             url += "&onlyBadRoads=True";
         }
-        url += "&fromDate=" + self.calculateQueryDateTime(self.dateRange);
+        // url += "&fromDate=" + self.calculateQueryDateTime(self.dateRange);
 
         $http.get(url).then(function success(response) {
             self.detections = response.data;
