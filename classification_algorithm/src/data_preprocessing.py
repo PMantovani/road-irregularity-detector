@@ -13,7 +13,7 @@ with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
         transformer.add_reading(row)
 
 with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
-          'road-irregularity-detector\\data\\processed_data.csv', 'w') as out_file:
+          'road-irregularity-detector\\data\\processed_data_2.csv', 'w') as out_file:
 
     out_file.write('Road Status,')
     out_file.write('Accelerometer X Mean,')
@@ -39,10 +39,10 @@ with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
     summary_array = transformer.get_summary_array()
     for i, row in enumerate(summary_array):
 
-        # if (row[0] == 2):
-        #     row[0] = 1
-        # elif(row[0] == 3):
-        #     row[0] = 2
+        if (row[0] == 2):
+            row[0] = 1
+        elif(row[0] == 3):
+            row[0] = 2
 
         out_file.write(str(row[0]) + ',' + str(row[1]) + ',' + str(row[2]) + ',' +
                        str(row[3]) + ',' + str(row[4]) + ',' + str(row[5]) + ',' +
