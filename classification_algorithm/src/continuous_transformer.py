@@ -1,9 +1,11 @@
 import numpy as np
+import math
 
 '''Transforms individual readings into continuous ones'''
 class ContinuousTransformer(object):
 
-    def __init__(self):
+    def __init__(self, axis_independent):
+        self.axis_independent = axis_independent
         self.quality = 0
         self.summary_array = []
         self.max_means = [0] * 7
@@ -42,8 +44,13 @@ class ContinuousTransformer(object):
             self.__reset_continuous()
             return
 
-        self.continuous_readings.append([road_status, acc_x, acc_y, acc_z, gyr_x,
-                                         gyr_y, gyr_z, lat, lng, speed, curr_time])
+        if self.axis_independent:
+            acc = math.sqrt(acc_x**2 + acc_y**2 + acc_z**2)
+            gyr = math.sqrt(gyr_x**2 + gyr_y**2 + gyr_z**2)
+            self.continuous_readings.append([road_status, acc, gyr, lat, lng, speed, curr_time])
+        else:
+            self.continuous_readings.append([road_status, acc_x, acc_y, acc_z, gyr_x,
+                                            gyr_y, gyr_z, lat, lng, speed, curr_time])
 
         if curr_time - self.start_time >= 10:
             self.__insert_to_summary_array()
@@ -88,12 +95,20 @@ class ContinuousTransformer(object):
         #         self.max_means[i] = max(self.max_means[i], abs(mean[i+1]))
         #         self.max_variances[i] = max(self.max_variances[i], abs(variance[i+1]))
 
-        self.summary_array.append(
-            [mean[0], mean[1], variance[1], mean[2], variance[2], mean[3], variance[3],
-             mean[4], variance[4], mean[5], variance[5], mean[6], variance[6], mean[9], variance[9],
-             self.continuous_readings[0][7], self.continuous_readings[0][8],
-             self.continuous_readings[len(self.continuous_readings)-1][7],
-             self.continuous_readings[len(self.continuous_readings)-1][8],
-             self.continuous_readings[len(self.continuous_readings)-1][10]])
+        if self.axis_independent:
+            self.summary_array.append(
+                [mean[0], mean[1], variance[1], mean[2], variance[2], mean[5], variance[5],
+                self.continuous_readings[0][3], self.continuous_readings[0][4],
+                self.continuous_readings[len(self.continuous_readings)-1][3],
+                self.continuous_readings[len(self.continuous_readings)-1][4],
+                self.continuous_readings[len(self.continuous_readings)-1][5]])
+        else:
+            self.summary_array.append(
+                [mean[0], mean[1], variance[1], mean[2], variance[2], mean[3], variance[3],
+                mean[4], variance[4], mean[5], variance[5], mean[6], variance[6], mean[9], variance[9],
+                self.continuous_readings[0][7], self.continuous_readings[0][8],
+                self.continuous_readings[len(self.continuous_readings)-1][7],
+                self.continuous_readings[len(self.continuous_readings)-1][8],
+                self.continuous_readings[len(self.continuous_readings)-1][10]])
 
         self.__reset_continuous()
