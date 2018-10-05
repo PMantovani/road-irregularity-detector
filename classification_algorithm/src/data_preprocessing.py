@@ -2,18 +2,26 @@ import csv
 from continuous_transformer import ContinuousTransformer
 
 axis_independent = True
+two_classes = True
 
 transformer = ContinuousTransformer(axis_independent)
 
-with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
-          'road-irregularity-detector\\data\\raw_data.csv', 'r') as raw_data:
+path = 'C:\\Users\\pmant\\Documents\\Repositories\\road-irregularity-detector\\data\\'
+raw_filepath = path + 'raw_data.csv'
+out_filepath = path + 'processed_data'
+if two_classes:
+    out_filepath += '_2'
+if axis_independent:
+    out_filepath += '_axis_indep'
+out_filepath += '.csv'
+
+with open(raw_filepath, 'r') as raw_data:
     csv_reader = csv.reader(raw_data)
 
     for i, row in enumerate(csv_reader):
         transformer.add_reading(row)
 
-with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
-          'road-irregularity-detector\\data\\processed_data_2.csv', 'w') as out_file:
+with open(out_filepath, 'w') as out_file:
 
     if axis_independent:
         out_file.write('Road Status,')
@@ -47,13 +55,14 @@ with open('C:\\Users\\pmant\\Documents\\Repositories\\' +
     summary_array = transformer.get_summary_array()
     for i, row in enumerate(summary_array):
 
-        if row[0] == 2:
-            row[0] = 1
-        elif row[0] == 3:
-            row[0] = 2
+        if two_classes:
+            if row[0] == 2:
+                row[0] = 1
+            elif row[0] == 3:
+                row[0] = 2
 
         for j, column in enumerate(row):
-            out_file.write(str(row[column]))
+            out_file.write(str(column))
 
             if j != len(row)-1:
                 out_file.write(',') # print comma except for last row
