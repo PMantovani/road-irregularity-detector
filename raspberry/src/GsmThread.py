@@ -59,16 +59,14 @@ class GsmThread(Thread):
                 else:
                     gps_info = self.gsm_device.get_gps_info()
                     fix, lat, lng, speed, course = gps_info
-                    if fix == 0:
+                    if fix == '0':
                         self.gps_validity = False
                     else:
                         self.gps_validity = True
-
-                    self.latitude = float(lat)
-                    self.longitude = float(lng)
-                    self.speed = float(speed)
-                    self.course = float(course)
-
+                        self.latitude = float(lat)
+                        self.longitude = float(lng)
+                        self.speed = float(speed)
+                        self.course = float(course)
 
             except GsmException:
                     self.pending_http_request = False

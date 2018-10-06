@@ -88,26 +88,8 @@ class Main(object):
                 end_lng = indicators[17]
                 detection_time = str(datetime.now())
 
-                self.detections_buffer.append([road_quality, speed, start_lat, start_lng,
+                self.send_detection_to_server([road_quality, speed, start_lat, start_lng,
                                                end_lat, end_lng, detection_time])
-
-                body = self.build_request(self.detections_buffer)
-                self.gsm_http_config.set_body(body)
-
-                self.gsm.trigger_http_request()
-                # wait for HTTP response
-                while not self.gsm.has_http_response():
-                    pass
-
-                code, body = self.gsm.get_http_response()
-
-                if code == -1:
-                    print('GSM Exception while sending HTTP Request')
-                else:
-                    print('HTTP request successful.')
-                    print('Response Code: ' + code)
-                    print('Response Body: ' + body)
-                    self.detections_buffer = []
 
 
         except KeyboardInterrupt:
@@ -130,6 +112,28 @@ class Main(object):
 
         data_json = json.dumps(obj_representation)
         return data_json
+
+    def send_detection_to_server(self, detection_body):
+        self.detections_buffer.append(detection_body)
+
+        body = self.build_request(self.detections_buffer)
+        self.gsm_http_config.set_body(body)
+
+        self.gsm.trigger_http_request()
+        # wait for HTTP response
+        while not self.gsm.has_http_response():
+            pass
+
+        code, body = self.gsm.get_http_response()
+
+        if code == -1:
+            print('GSM Exception while sending HTTP Request')
+        else:
+            print('HTTP request successful.')
+            print('Response Code: ' + code)
+            print('Response Body: ' + body)
+            self.detections_buffer = []
+
 
     def turn_off_all_leds(self):
         self.bad_led.off()
