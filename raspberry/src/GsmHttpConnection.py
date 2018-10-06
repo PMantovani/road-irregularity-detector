@@ -1,6 +1,6 @@
 class GsmHttpConnection(object):
 
-    def __init__(self, host, path = '', resource = '', port=80):
+    def __init__(self, host, path='', resource='', port=80):
         self.port = port
         self.host = host
         self.path = path
@@ -9,7 +9,7 @@ class GsmHttpConnection(object):
         self.headers = {}
         self.body = ''
         self.params = {}
-        
+
     def set_method(self, method):
         self.method = method
 
@@ -37,5 +37,5 @@ class GsmHttpConnection(object):
 
         if len(self.body) > 0:
             request += self.body + '\r\n\r\n'
-            
+
         return request

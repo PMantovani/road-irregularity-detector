@@ -1,5 +1,5 @@
-import numpy as np
 import time
+import numpy as np
 
 class MeasurementProcessor(object):
 
@@ -24,7 +24,7 @@ class MeasurementProcessor(object):
 
         if speed < MeasurementProcessor.SPEED_LIMIT or not gps_signal_validity:
             self.__reset_bufer()
-            return -1
+            return False
 
         if not self.measurements:
             self.start_time = time.time()
@@ -35,7 +35,7 @@ class MeasurementProcessor(object):
         self.end_time = time.time()
         self.latest_latitude = latitude
         self.latest_longitude = longitude
-        return 0
+        return True
 
     def is_buffer_full(self):
         return (self.end_time - self.start_time) > MeasurementProcessor.TOTAL_SAMPLING_TIME
@@ -50,7 +50,7 @@ class MeasurementProcessor(object):
         return [mean[0], variance[0], mean[1], variance[1], mean[2], variance[2],
                 mean[3], variance[3], mean[4], variance[4], mean[5], variance[5],
                 mean[6], variance[6], self.start_latitude, self.start_longitude,
-                self.latest_latitude, self.latest_longitude, time.time()]
+                self.latest_latitude, self.latest_longitude]
 
     def __reset_bufer(self):
         self.measurements = []
