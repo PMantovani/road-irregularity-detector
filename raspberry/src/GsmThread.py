@@ -69,6 +69,6 @@ class GsmThread(Thread):
                         self.course = float(course)
 
             except GsmException:
-                    self.pending_http_request = False
-                    self.response_code = -1
-                    self.response_body = 'GSM Exception'
+                self.pending_http_request = False
+                self.response_code = -1
+                self.response_body = 'GSM Exception'

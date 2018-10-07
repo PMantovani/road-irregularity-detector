@@ -81,11 +81,11 @@ class Main(object):
                     self.regular_led.off()
                     self.good_led.on()
 
-                speed = indicators[12]
-                start_lat = indicators[14]
-                start_lng = indicators[15]
-                end_lat = indicators[16]
-                end_lng = indicators[17]
+                speed = measurements_output[12]
+                start_lat = measurements_output[14]
+                start_lng = measurements_output[15]
+                end_lat = measurements_output[16]
+                end_lng = measurements_output[17]
                 detection_time = str(datetime.now())
 
                 self.send_detection_to_server([road_quality, speed, start_lat, start_lng,
