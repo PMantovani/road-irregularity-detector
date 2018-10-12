@@ -15,7 +15,7 @@ test_classes = []
 
 path = '../../data/'
 filename = path + 'processed_data'
-out_filename = path + '/results/result'
+out_filename = path + '/results/'
 
 # parse number of classes
 if '-t' in sys.argv or '--two' in sys.argv:
