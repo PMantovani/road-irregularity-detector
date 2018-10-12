@@ -59,16 +59,16 @@ else:
 print 'Tipo de kernel: ' + str(kernel_type)
 print 'Parametros de classificacao: C=' + str(c_parameter) + ' gamma=' + str(gamma_parameter)
 
+out_filename += kernel_type
+out_filename += '_c_' + str(c_parameter)
+out_filename += '_g_' + str(gamma_parameter)
+
 if two_classes:
     filename += '_2'
     out_filename += '_2'
 if axis_indep:
     filename += '_axis_indep'
     out_filename += '_axis_indep'
-
-out_filename += kernel_type
-out_filename += '_c_' + str(c_parameter)
-out_filename += '_g_' + str(gamma_parameter)
 
 filename += '.csv'
 out_filename += '.csv'
