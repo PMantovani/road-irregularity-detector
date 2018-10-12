@@ -13,8 +13,9 @@ training_classes = []
 test_data = []
 test_classes = []
 
-path = 'C:\\Users\\pmant\\Documents\\Repositories\\road-irregularity-detector\\data\\'
+path = '../../data/'
 filename = path + 'processed_data'
+out_filename = path + '/results/result'
 
 # parse number of classes
 if '-t' in sys.argv or '--two' in sys.argv:
@@ -60,9 +61,17 @@ print 'Parametros de classificacao: C=' + str(c_parameter) + ' gamma=' + str(gam
 
 if two_classes:
     filename += '_2'
+    out_filename += '_2'
 if axis_indep:
     filename += '_axis_indep'
+    out_filename += '_axis_indep'
+
+out_filename += kernel_type
+out_filename += '_c_' + str(c_parameter)
+out_filename += '_g_' + str(gamma_parameter)
+
 filename += '.csv'
+out_filename += '.csv'
 
 with open(filename, 'r') as p_data:
     csv_reader = csv.reader(p_data)
@@ -105,5 +114,13 @@ with open(filename, 'r') as p_data:
     print 'F1 Score: ' + str(f1_score(test_classes, predicted, average='macro'))
     print 'F1 Score (per class): ' + str(f1_score(test_classes, predicted, average=None))
 
+    with open(out_filename, 'w') as out_file:
+        out_file.write('Confusion Matrix:\n')
+        out_file.write(str(conf_matrix))
+        out_file.write('Precision Score: ' + str(precision_score(test_classes, predicted, average='macro')))
+        out_file.write('Recall Score: ' + str(recall_score(test_classes, predicted, average='macro')))
+        out_file.write('F1 Score: ' + str(f1_score(test_classes, predicted, average='macro')))
+        out_file.write('F1 Score (per class): ' + str(f1_score(test_classes, predicted, average=None)))
+
     # save model to file
-    pickle.dump(classifier, open('../../data/model.sav', 'wb'))
+    # pickle.dump(classifier, open('../../data/model.sav', 'wb'))
