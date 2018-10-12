@@ -116,7 +116,7 @@ with open(filename, 'r') as p_data:
 
     with open(out_filename, 'w') as out_file:
         out_file.write('Confusion Matrix:\n')
-        out_file.write(str(conf_matrix))
+        out_file.write(str(conf_matrix) + '\n')
         out_file.write('Precision Score: ' + str(precision_score(test_classes, predicted, average='macro')) + '\n')
         out_file.write('Recall Score: ' + str(recall_score(test_classes, predicted, average='macro')) + '\n')
         out_file.write('F1 Score: ' + str(f1_score(test_classes, predicted, average='macro')) +  + '\n')
