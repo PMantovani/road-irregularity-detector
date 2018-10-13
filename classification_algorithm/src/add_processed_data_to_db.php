@@ -4,7 +4,7 @@ require_once('../../web/src/RoadManagerDB.php');
 
 $api = new RoadManagerDB();
 
-$file = fopen('..\..\data\processed_data.csv', 'r');
+$file = fopen('../../data/processed_data.csv', 'r');
 $firstLine = true;
 $counter = 0;
 
@@ -23,7 +23,7 @@ while (($row = fgetcsv($file, 1000)) !== NULL) {
     $data['speed'] = $row[13];
     $data['course'] = 13;
     $data['quality'] = $row[0];
-    $data['reading_date'] = date('c', $row[19]);
+    $data['reading_date'] = date('Y-m-d H:i:s', $row[19]);
 
     $id = $api->insertDetection($data);
     $api->insertDetectionPath($id, $data['start_latitude'], $data['start_longitude'], 
