@@ -4,10 +4,10 @@ python:
 
 before_install:
   - chmod +x run_py_tests.sh
+  - sudo apt-get install python-smbus -y
 
 install:
   - pip install numpy
-  - sudo apt-get install python-smbus -y
 
 script:
   - ./run_py_tests.sh
