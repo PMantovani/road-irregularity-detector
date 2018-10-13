@@ -29,7 +29,7 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
 
     self.requestDetections = function() {
         var bounds = Map.getMapBounds();
-        var url = "http://localhost/api.php/detections?north=" + bounds.north +
+        var url = "https://monetovani.com/roads/api.php/detections?north=" + bounds.north +
                                            "&south=" + bounds.south + 
                                            "&west="  + bounds.west +
                                            "&east="  + bounds.east;
@@ -51,7 +51,7 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
     };
 
     self.requestSensors = function() {
-        var url = "http://localhost/api.php/sensors";
+        var url = "https://monetovani.com/roads/api.php/sensors";
 
         $http.get(url).then(function success(response) {
             self.sensors = response.data;

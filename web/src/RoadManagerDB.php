@@ -8,7 +8,7 @@ require_once('RoadsGoogleApiException.php');
 class RoadManagerDB {
 
     public function __construct() {
-        $this->db = new mysqli("localhost", "root", "root12mysql!", "roadmanager");
+        $this->db = new mysqli("localhost", "user", "password", "roadmanager");
     }
 
     public function getDetections(array $filters) {
