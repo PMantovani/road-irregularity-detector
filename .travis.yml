@@ -8,6 +8,7 @@ before_install:
 
 install:
   - pip install numpy
+  - pip install smbus
 
 script:
   - ./run_py_tests.sh
