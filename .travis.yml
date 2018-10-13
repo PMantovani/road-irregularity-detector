@@ -3,7 +3,7 @@ python:
   - "2.7"
 
 install:
-  - pip install unittest numpy
+  - pip install numpy
 
 script:
   - python classification_algorithm/test/test_continuous_transformer.py
