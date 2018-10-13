@@ -4,7 +4,8 @@ from continuous_transformer import ContinuousTransformer
 axis_independent = True
 two_classes = True
 
-transformer = ContinuousTransformer(axis_independent)
+transformer = ContinuousTransformer()
+transformer.set_axis_independent(axis_independent)
 
 path = 'C:\\Users\\pmant\\Documents\\Repositories\\road-irregularity-detector\\data\\'
 raw_filepath = path + 'raw_data.csv'

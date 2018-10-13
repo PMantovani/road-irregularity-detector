@@ -4,8 +4,8 @@ import math
 '''Transforms individual readings into continuous ones'''
 class ContinuousTransformer(object):
 
-    def __init__(self, axis_independent):
-        self.axis_independent = axis_independent
+    def __init__(self):
+        self.axis_independent = False
         self.quality = 0
         self.summary_array = []
         self.max_means = [0] * 7
@@ -13,6 +13,9 @@ class ContinuousTransformer(object):
         self.continuous_readings = []
         self.start_time = 0
         self.times_called = 0
+
+    def set_axis_independent(self, axis_independent):
+        self.axis_independent = axis_independent
 
     def add_reading(self, individual_reading):
         self.times_called += 1
