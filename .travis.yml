@@ -7,6 +7,7 @@ before_install:
 
 install:
   - pip install numpy
+  - apt-get install python-smbus -y
 
 script:
   - ./run_py_tests.sh
