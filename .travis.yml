@@ -6,4 +6,4 @@ install:
   - pip install numpy
 
 script:
-  - python classification_algorithm/test/test_continuous_transformer.py
+  - ./run_py_tests.sh
