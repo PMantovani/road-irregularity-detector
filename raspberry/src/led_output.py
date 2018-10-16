@@ -10,9 +10,10 @@ from MPUThread import MPUThread
 from gpiozero import LED
 from MeasurementProcessor import MeasurementProcessor
 from GsmDevice import GsmDevice
+from GsmException import GsmException
 from GsmHttpConnection import GsmHttpConnection
 from GsmApnConfiguration import GsmApnConfiguration
-from GsmThread import GsmThread
+from gps import GPS
 
 class Main(object):
     """ main class """
@@ -20,19 +21,24 @@ class Main(object):
     def __init__(self):
         self.status = 0
 
-        # thread objects
+        # start serials
+        gsm_serial = serial.Serial('/dev/ttyS0', 115200)
+        gps_serial = serial.Serial('/dev/ttyS1', 9600)
+
+        # Start MPU Thread
         self.mpu = MPUThread()
         self.mpu.setDaemon(True)
-        # start mpu thread
         self.mpu.start()
 
+        # Start GPS Thread
+        self.gps = GPSThread(gps_serial)
+        self.gps.setDaemon(True)
+        self.gps.start()
+
         # GSM configuration
-        self.gsm = GsmThread(GsmDevice(serial.Serial('/dev/ttyS0', 115200)))
-        self.gsm.set_apn_config(GsmApnConfiguration("zap.vivo.com.br", "vivo", "vivo"))
+        self.gsm = GsmDevice(gsm_serial)
+        self.apn_config = GsmApnConfiguration("zap.vivo.com.br", "vivo", "vivo")
         self.gsm_http_config = GsmHttpConnection("monetovani.com")
-        self.gsm.set_http_config(self.gsm_http_config)
-        self.gsm.setDaemon(True)
-        self.gsm.start()
 
         # start leds
         self.good_led = LED(17)
@@ -54,9 +60,9 @@ class Main(object):
                 while not self.measurements.is_buffer_full():
                     acc_x, acc_y, acc_z = self.mpu.getAccelerationValue()
                     gyr_x, gyr_y, gyr_z = self.mpu.getGyroscopeValue()
-                    speed = self.gsm.get_speed()
-                    latitude, longitude = self.gsm.get_coordinates()
-                    gps_validity = self.gsm.get_gps_validity()
+                    speed = self.gps.get_speed()
+                    latitude, longitude = self.gps.get_coordinates()
+                    gps_validity = self.gps.get_gps_validity()
 
                     measurement_unit = [acc_x, acc_y, acc_z, gyr_x, gyr_y, gyr_z,
                                         speed, latitude, longitude, gps_validity]
@@ -96,6 +102,23 @@ class Main(object):
             self.exit()
             return
 
+    def send_detection_to_server(self, detection_body):
+        self.detections_buffer.append(detection_body)
+
+        body = self.build_request(self.detections_buffer)
+        self.gsm_http_config.set_body(body)
+
+        try:
+            code, body = self.gsm_device.send_http(self.gsm_http_config, self.apn_config)
+            print('HTTP request successful.')
+            print('Response Code: ' + code)
+            print('Response Body: ' + body)
+            self.detections_buffer = []
+            return
+        except GSMException:
+            print('GSM Exception while sending HTTP Request')
+            return 
+
     def build_request(self, detections):
         obj_representation = []
         for detection in detections:
@@ -113,27 +136,6 @@ class Main(object):
         data_json = json.dumps(obj_representation)
         return data_json
 
-    def send_detection_to_server(self, detection_body):
-        self.detections_buffer.append(detection_body)
-
-        body = self.build_request(self.detections_buffer)
-        self.gsm_http_config.set_body(body)
-
-        self.gsm.trigger_http_request()
-        # wait for HTTP response
-        while not self.gsm.has_http_response():
-            pass
-
-        code, body = self.gsm.get_http_response()
-
-        if code == -1:
-            print('GSM Exception while sending HTTP Request')
-        else:
-            print('HTTP request successful.')
-            print('Response Code: ' + code)
-            print('Response Body: ' + body)
-            self.detections_buffer = []
-
 
     def turn_off_all_leds(self):
         self.bad_led.off()
@@ -146,9 +148,7 @@ class Main(object):
         self.good_led.on()
 
     def exit(self):
-        """ kill all threads """
-
-        print('Closed all threads successfully')
+        print('Ending Road Detector')
         sys.exit()
         return
 
