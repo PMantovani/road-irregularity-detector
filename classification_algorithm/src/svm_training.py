@@ -4,8 +4,6 @@ import pickle
 import numpy as np
 from sklearn import svm
 from sklearn.metrics import f1_score
-from sklearn.metrics import recall_score
-from sklearn.metrics import precision_score
 from sklearn.metrics import confusion_matrix
 
 training_data = []
@@ -62,7 +60,10 @@ if axis_indep:
 else:
     print 'Rodando sem independencia de eixo'
 print 'Tipo de kernel: ' + str(kernel_type)
-print 'Parametros de classificacao: C=' + str(c_parameter) + ' gamma=' + str(gamma_parameter)
+if sweep_run:
+    print 'Rodando com varredura de parâmetros'
+else:
+    print 'Parametros de classificacao: C=' + str(c_parameter) + ' gamma=' + str(gamma_parameter)
 
 out_filename += kernel_type
 
