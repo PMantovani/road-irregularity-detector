@@ -1,7 +1,7 @@
-import csv
-import numpy as np
-import pickle
 import sys
+import csv
+import pickle
+import numpy as np
 from sklearn import svm
 from sklearn.metrics import f1_score
 from sklearn.metrics import recall_score
@@ -14,7 +14,7 @@ test_data = []
 test_classes = []
 
 path = '../../data/'
-filename = path + 'processed_data'
+filename = path + 'processed_data_normalized'
 out_filename = path + '/results/'
 
 # parse number of classes
@@ -47,6 +47,11 @@ if '-k' in sys.argv:
     ind = sys.argv.index('-k')
     kernel_type = sys.argv[ind+1]
 
+# check if we are performing a sweep run
+sweep_run = False
+if '-s' in sys.argv:
+    sweep_run = True
+
 
 if two_classes:
     print 'Rodando classificador para 2 classes'
@@ -60,8 +65,10 @@ print 'Tipo de kernel: ' + str(kernel_type)
 print 'Parametros de classificacao: C=' + str(c_parameter) + ' gamma=' + str(gamma_parameter)
 
 out_filename += kernel_type
-out_filename += '_c_' + str(c_parameter)
-out_filename += '_g_' + str(gamma_parameter)
+
+if not sweep_run:
+    out_filename += '_c_' + str(c_parameter)
+    out_filename += '_g_' + str(gamma_parameter)
 
 if two_classes:
     filename += '_2'
@@ -100,27 +107,43 @@ with open(filename, 'r') as p_data:
                 to_training_data = True
         first_row = False
 
+if sweep_run:
+    sweep_values = [0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
+    f1_matrix = np.empty((len(sweep_values), len(sweep_values)))
+
+    for i, gamma in enumerate(sweep_values):
+        for j, c in enumerate(sweep_values):
+            classifier = svm.SVC(gamma=gamma, C=c, kernel=kernel_type, degree=2)
+            classifier.fit(training_data, training_classes)
+            predicted = classifier.predict(test_data)
+            f1_matrix[i][j] = str(f1_score(test_classes, predicted, average='macro'))
+            print 'F1 Score: ' + str(f1_matrix[i-1][j-1])
+
+    with open(out_filename, 'w') as out_file:
+        out_file.write('gamma\\C')
+        for sweep in sweep_values:
+            out_file.write(',' + str(sweep))
+        out_file.write('\n')
+
+        for i, row in enumerate(f1_matrix):
+            out_file.write(str(sweep_values[i]))
+
+            for cell in row:
+                out_file.write(',' + str(cell))
+            out_file.write('\n')
+
+else:
     classifier = svm.SVC(gamma=gamma_parameter, C=c_parameter, kernel=kernel_type, degree=2)
     classifier.fit(training_data, training_classes)
     predicted = classifier.predict(test_data)
-
     np.set_printoptions(precision=2, suppress=True)
-
     conf_matrix = np.transpose(confusion_matrix(test_classes, predicted))
-    print 'Confusion Matrix: '
-    print str(conf_matrix)
-    print 'Precision Score: ' + str(precision_score(test_classes, predicted, average='macro'))
-    print 'Recall Score: ' + str(recall_score(test_classes, predicted, average='macro'))
-    print 'F1 Score: ' + str(f1_score(test_classes, predicted, average='macro'))
-    print 'F1 Score (per class): ' + str(f1_score(test_classes, predicted, average=None))
+    f1 = str(f1_score(test_classes, predicted, average='macro'))
+    print 'F1 Score: ' + str(f1)
 
     with open(out_filename, 'w') as out_file:
-        out_file.write('Confusion Matrix:\n')
         out_file.write(str(conf_matrix) + '\n')
-        out_file.write('Precision Score: ' + str(precision_score(test_classes, predicted, average='macro')) + '\n')
-        out_file.write('Recall Score: ' + str(recall_score(test_classes, predicted, average='macro')) + '\n')
-        out_file.write('F1 Score: ' + str(f1_score(test_classes, predicted, average='macro')) + '\n')
-        out_file.write('F1 Score (per class): ' + str(f1_score(test_classes, predicted, average=None)) + '\n')
+        out_file.write(f1)
 
-    # save model to file
-    # pickle.dump(classifier, open('../../data/model.sav', 'wb'))
+# save model to file
+# pickle.dump(classifier, open('../../data/model.sav', 'wb'))

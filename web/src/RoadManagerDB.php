@@ -52,7 +52,7 @@ class RoadManagerDB {
             $params[] = $value;
             $num_params .= "s";
         }
-        $query .= 'LIMIT 50000;';
+        $query .= 'LIMIT 1000;';
 
         // Remove aditional AND right after the WHERE clause
         $query = str_replace('WHERE AND', 'WHERE', $query);
