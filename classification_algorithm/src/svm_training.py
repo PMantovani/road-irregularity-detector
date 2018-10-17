@@ -117,7 +117,7 @@ if sweep_run:
             classifier.fit(training_data, training_classes)
             predicted = classifier.predict(test_data)
             f1_matrix[i][j] = str(f1_score(test_classes, predicted, average='macro'))
-            print 'F1 Score: ' + str(f1_matrix[i-1][j-1])
+            print 'F1 Score: ' + str(f1_matrix[i][j])
 
     with open(out_filename, 'w') as out_file:
         out_file.write('gamma\\C')
