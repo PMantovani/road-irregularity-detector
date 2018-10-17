@@ -61,7 +61,7 @@ else:
     print 'Rodando sem independencia de eixo'
 print 'Tipo de kernel: ' + str(kernel_type)
 if sweep_run:
-    print 'Rodando com varredura de parâmetros'
+    print 'Rodando com varredura de parametros'
 else:
     print 'Parametros de classificacao: C=' + str(c_parameter) + ' gamma=' + str(gamma_parameter)
 
