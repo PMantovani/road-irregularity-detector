@@ -5,6 +5,7 @@ import numpy as np
 from sklearn import svm
 from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import MinMaxScaler
 
 training_data = []
 training_classes = []
@@ -12,7 +13,7 @@ test_data = []
 test_classes = []
 
 path = '../../data/'
-filename = path + 'processed_data_normalized'
+filename = path + 'processed_data'
 out_filename = path + '/results/'
 
 # parse number of classes
@@ -108,17 +109,22 @@ with open(filename, 'r') as p_data:
                 to_training_data = True
         first_row = False
 
+scaler = MinMaxScaler()
+training_normalized = scaler.fit_transform(training_data)
+test_normalized = scaler.transform(test_data)
+
 if sweep_run:
-    sweep_values = [0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000]
+    sweep_values = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
     f1_matrix = np.empty((len(sweep_values), len(sweep_values)))
 
     for i, gamma in enumerate(sweep_values):
         for j, c in enumerate(sweep_values):
-            classifier = svm.SVC(gamma=gamma, C=c, kernel=kernel_type, degree=2)
-            classifier.fit(training_data, training_classes)
-            predicted = classifier.predict(test_data)
+            classifier = svm.SVC(gamma=gamma, C=c, kernel=kernel_type, degree=2, cache_size=4000)
+            classifier.fit(training_normalized, training_classes)
+            predicted = classifier.predict(test_normalized)
             f1_matrix[i][j] = str(f1_score(test_classes, predicted, average='macro'))
             print 'F1 Score: ' + str(f1_matrix[i][j])
+        print 'Finished processing gamma = ' + str(gamma)
 
     with open(out_filename, 'w') as out_file:
         out_file.write('gamma\\C')
@@ -135,8 +141,8 @@ if sweep_run:
 
 else:
     classifier = svm.SVC(gamma=gamma_parameter, C=c_parameter, kernel=kernel_type, degree=2)
-    classifier.fit(training_data, training_classes)
-    predicted = classifier.predict(test_data)
+    classifier.fit(training_normalized, training_classes)
+    predicted = classifier.predict(test_normalized)
     np.set_printoptions(precision=2, suppress=True)
     conf_matrix = np.transpose(confusion_matrix(test_classes, predicted))
     f1 = str(f1_score(test_classes, predicted, average='macro'))
