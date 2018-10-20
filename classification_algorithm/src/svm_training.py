@@ -14,7 +14,7 @@ test_classes = []
 
 path = '../../data/'
 filename = path + 'processed_data'
-out_filename = path + '/results/'
+out_filename = path + 'results/'
 
 # parse number of classes
 if '-t' in sys.argv or '--two' in sys.argv:
@@ -114,7 +114,7 @@ training_normalized = scaler.fit_transform(training_data)
 test_normalized = scaler.transform(test_data)
 
 if sweep_run:
-    sweep_values = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+    sweep_values = [0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000, 1000000]
     f1_matrix = np.empty((len(sweep_values), len(sweep_values)))
 
     for i, gamma in enumerate(sweep_values):
