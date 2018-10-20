@@ -1,20 +1,14 @@
 from threading import Thread
-import sys
-import serial
-
 
 class GPS(Thread):
-    def is_valid(self):
-        return self.signal_validity
-
-    def __init__(self):
+    def __init__(self, serial):
         Thread.__init__(self)
-        self.port = '/dev/ttyS0'
-        self.speed = 9600
+        self.serial = serial
         self.signal_validity = False
         self.latitude = 0.
         self.longitude = 0.
         self.speed = 0.
+        self.enabled = True
 
     @staticmethod
     def convert_degrees(degrees, minutes):
@@ -53,23 +47,34 @@ class GPS(Thread):
 
         return self.latitude, self.longitude, self.speed
 
-    def getLatitude(self):
+    def get_latitude(self):
         return self.latitude
 
-    def getLongitude(self):
+    def get_longitude(self):
         return self.longitude
 
-    def getSpeed(self):
+    def get_coordinates(self):
+        return self.latitude, self.longitude
+
+    def get_speed(self):
         return self.speed
+        
+    def is_valid(self):
+        return self.signal_validity
+
+    def disable_serial(self):
+        self.enabled = False
+
+    def enable_serial(self):
+        self.enabled = True
 
     def run(self):
         try:
-            my_serial = serial.Serial(self.port, self.speed)
-
             while True:
-                data = my_serial.readline()
-                if data.startswith("$GPRMC"):
-                    self.parse_gprmc(data)
+                if self.enabled:
+                    data = self.serial.readline()
+                    if data.startswith("$GPRMC"):
+                        self.parse_gprmc(data)
 
-        except Exception as e:
+        except Exception:
             return

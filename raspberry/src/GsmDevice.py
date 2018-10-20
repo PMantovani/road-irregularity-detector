@@ -60,7 +60,7 @@ class GsmDevice(object):
         self.serial.readline()
         if self.serial.readline() == 'ERROR\r\n':
             raise GsmException
-    
+
     def send_and_check_cipstart(self, protocol, host, port):
         self.serial.write('AT+CIPSTART="' + protocol +
                           '","' + host + '",' + str(port) + '\r\n')
