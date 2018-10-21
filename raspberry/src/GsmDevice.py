@@ -65,7 +65,7 @@ class GsmDevice(object):
         self.serial.readline()
         self.serial.readline()
         status = self.serial.readline()
-        if status != 'CONNECT OK\r\n' and status != 'ALREADY CONNECT\r\n'
+        if status != 'CONNECT OK\r\n' and status != 'ALREADY CONNECT\r\n':
             raise GsmException('Exception in command AT+CIPSTART')
 
     def send_and_read(self, at_command):
