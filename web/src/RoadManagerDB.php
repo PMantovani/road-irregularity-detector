@@ -73,7 +73,7 @@ class RoadManagerDB {
 
         for ($i=0; $i<sizeof($key_params); $i++) {
             if (!array_key_exists($key_params[$i], $data)) {
-                throw new MissingFieldsException();
+                throw new MissingFieldsException('Missing mandatory field ' . $keys_params[$i]);
             }
         }
 

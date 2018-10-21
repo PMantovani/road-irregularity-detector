@@ -7,6 +7,7 @@
 
 require_once('RoadManagerDB.php');
 require_once('RoadsGoogleApi.php');
+require_once('MissingFieldsException.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
 $path = explode('/', trim($_SERVER['PATH_INFO'],'/'))[0];
@@ -25,12 +26,20 @@ else if($method !== "GET" && $method !== "POST") {
 $roadManagerDb = new RoadManagerDB();
 
 if ($method === "POST") {
-    $id = $roadManagerDb->insertDetection($input_json);
-    $roadManagerDb->insertDetectionPath($id, $input_json['start_latitude'], $input_json['start_longitude'],
-                                             $input_json['end_latitude'],   $input_json['end_longitude']);
-
-    http_response_code(201);
-    echo $id;
+    try {
+        for ($i=0; $i<sizeof($input_json); $i++) {
+            
+            $id = $roadManagerDb->insertDetection($input_json[$i]);
+            $roadManagerDb->insertDetectionPath($id, $input_json[$i]['start_latitude'], $input_json[$i]['start_longitude'],
+                                                    $input_json[$i]['end_latitude'],   $input_json[$i]['end_longitude']);
+        }
+        
+        http_response_code(201);
+        echo $id;
+    } catch (MissingFieldsException $e) {
+        http_response_code(400);
+        echo $e->getMessage();
+    }
 }
 
 

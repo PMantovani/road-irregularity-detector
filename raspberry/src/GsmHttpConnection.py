@@ -34,7 +34,7 @@ class GsmHttpConnection(object):
 
         request += ' /' + self.path + '/' + self.resource
         request += ' HTTP/1.1\r\n'
-        request += 'Host: GSMDevice\r\n\r\n'
+        request += 'Host: ' + self.host + '\r\n\r\n'
 
         if len(self.body) > 0:
             request += self.body + '\r\n\r\n'
