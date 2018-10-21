@@ -38,7 +38,7 @@ class Main(object):
         self.serial = serial.Serial('/dev/ttyS0', 9600)
         self.gsm = GsmDevice(self.serial)
         self.apn_config = GsmApnConfiguration("zap.vivo.com.br", "vivo", "vivo")
-        self.gsm_http_config = GsmHttpConnection("monetovani.com", "/roads", "api.php")
+        self.gsm_http_config = GsmHttpConnection("monetovani.com", "", "roads_api.php")
         self.gsm_http_config.set_method('POST')
 
         self.gps = GPS(self.serial, self.serial_lock)

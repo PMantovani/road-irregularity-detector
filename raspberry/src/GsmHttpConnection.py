@@ -40,8 +40,8 @@ class GsmHttpConnection(object):
         request += '/' + self.resource
         request += ' HTTP/1.1\r\n'
         for header, value in self.headers.items():
-            request += header + ': ' + str(value)
-        request += '\r\n\r\n'
+            request += header + ': ' + str(value) + '\r\n'
+        request += '\r\n'
 
         if self.body:
             request += self.body

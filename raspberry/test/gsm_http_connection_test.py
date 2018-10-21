@@ -25,4 +25,9 @@ class GPSTest(unittest.TestCase):
         http = GsmHttpConnection("test.com", "", "resource.html")
         self.assertEqual(http.build(), "GET /resource.html HTTP/1.1\r\nHost: test.com\r\n\r\n")
 
+    def test_build_with_body_inserts_content_length(self):
+        http = GsmHttpConnection("test.com", "", "resource.html")
+        http.set_body('TEST')
+        self.assertEqual(http.build(), "GET /resource.html HTTP/1.1\r\nHost: test.com\r\nContent-Length: 4\r\n\r\nTEST")
+
 unittest.main()
