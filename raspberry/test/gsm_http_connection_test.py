@@ -21,4 +21,8 @@ class GPSTest(unittest.TestCase):
         http = GsmHttpConnection("test.com", "/path", "resource.html")
         self.assertEqual(http.build(), "GET /path/resource.html HTTP/1.1\r\nHost: test.com\r\n\r\n")
 
+    def test_build_with_empty_path(self):
+        http = GsmHttpConnection("test.com", "", "resource.html")
+        self.assertEqual(http.build(), "GET /resource.html HTTP/1.1\r\nHost: test.com\r\n\r\n")
+
 unittest.main()

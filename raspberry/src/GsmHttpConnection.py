@@ -31,8 +31,12 @@ class GsmHttpConnection(object):
         if len(self.resource) > 0:
             if self.resource[0] == '/':
                 self.resource = self.resource[1:]
+                
+        request += ' '
+        if self.path != '':
+            request += '/' + self.path
 
-        request += ' /' + self.path + '/' + self.resource
+        request += '/' + self.resource
         request += ' HTTP/1.1\r\n'
         request += 'Host: ' + self.host + '\r\n\r\n'
 
