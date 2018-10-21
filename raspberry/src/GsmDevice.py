@@ -24,25 +24,18 @@ class GsmDevice(object):
 
     def send_http(self, httpConnection, apnConfiguration):
 
-        if not self.has_ip_address():
-            self.send_and_check('AT+CFUN=1')
-            self.send_and_check('AT+CGATT=1')
-            self.send_and_check('AT+CIPSHUT')
-            self.send_and_check('AT+CIPMUX=0')
-            self.send_and_check('AT+CSTT=' + apnConfiguration.get_apn() + ',' +
-                                            apnConfiguration.get_user() + ',' +
-                                            apnConfiguration.get_password())
-            self.send_and_check('AT+CIICR')
-            self.send_and_check('AT+CIFSR')
-        status = self.send_and_check_cipstart('TCP', httpConnection.get_host(),
-                                                     httpConnection.get_port())
-        if status == 'ERROR\r\n':
-            raise GsmException('Exception in command AT+CIPSTART')
-        elif status == 'STATE: IP STATUS\r\n':
-            self.send_and_check('AT+CIPSHUT')
-            self.send_and_check_cipstart('TCP', httpConnection.get_host(),
-                                                httpConnection.get_port())
-
+        self.send_and_check('AT+CFUN=1')
+        self.send_and_check('AT+CGATT=1')
+        self.send_and_check('AT+CIPSHUT')
+        self.send_and_check('AT+CIPMUX=0')
+        self.send_and_check('AT+CSTT=' + apnConfiguration.get_apn() + ',' +
+                                        apnConfiguration.get_user() + ',' +
+                                        apnConfiguration.get_password())
+        self.send_and_check('AT+CIICR')
+        self.send_and_check('AT+CIFSR')
+        self.send_and_check_cipstart('TCP', httpConnection.get_host(),
+                                            httpConnection.get_port())
+        
         request = httpConnection.build()
 
         self.send_and_read('AT+CIPSEND=' + str(len(request)))
@@ -71,7 +64,9 @@ class GsmDevice(object):
         self.serial.readline()
         self.serial.readline()
         self.serial.readline()
-        return self.serial.readline()
+        status = self.serial.readline()
+        if status != 'CONNECT OK\r\n' and status != 'ALREADY CONNECT\r\n'
+            raise GsmException('Exception in command AT+CIPSTART')
 
     def send_and_read(self, at_command):
         self.serial.write(at_command + '\r\n')
