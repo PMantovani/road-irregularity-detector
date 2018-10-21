@@ -10,7 +10,7 @@ import gps
 class GPSTest(unittest.TestCase):
     # noinspection PyPep8Naming,PyAttributeOutsideInit
     def setUp(self):
-        self.gps_test = gps.GPS(None)
+        self.gps_test = gps.GPS(None, None)
 
     def test_convert_degrees(self):
         res = self.gps_test.convert_degrees(57, 23.451)
