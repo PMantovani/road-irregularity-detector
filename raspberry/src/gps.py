@@ -9,7 +9,6 @@ class GPS(Thread):
         self.longitude = 0.
         self.speed = 0.
         self.lock = lock
-        self.lock.acquire()
 
     @staticmethod
     def convert_degrees(degrees, minutes):

@@ -14,7 +14,7 @@ from GsmHttpConnection import GsmHttpConnection
 from GsmApnConfiguration import GsmApnConfiguration
 from GsmException import GsmException
 from gps import GPS
-from threading import RLock
+from threading import Lock
 
 class Main(object):
     """ main class """
@@ -26,7 +26,7 @@ class Main(object):
         self.mux = LED(4)
         self.mux.on()
 
-        self.serial_lock = RLock()
+        self.serial_lock = Lock()
 
         # thread objects
         self.mpu = MPUThread()
@@ -38,7 +38,8 @@ class Main(object):
         self.serial = serial.Serial('/dev/ttyS0', 9600)
         self.gsm = GsmDevice(self.serial)
         self.apn_config = GsmApnConfiguration("zap.vivo.com.br", "vivo", "vivo")
-        self.gsm_http_config = GsmHttpConnection("monetovani.com")
+        self.gsm_http_config = GsmHttpConnection("monetovani.com/roads/api.php")
+        self.gsm_http_config.set_method('POST')
 
         self.gps = GPS(self.serial, self.serial_lock)
         self.gps.setDaemon(True)
@@ -139,8 +140,8 @@ class Main(object):
             print('Response Code: ' + code)
             print('Response Body: ' + body)
             self.detections_buffer = []
-        except GsmException:
-            print('GSM Exception while sending HTTP Request')
+        except GsmException as e:
+            print(e.message)
 
     def turn_off_all_leds(self):
         self.bad_led.off()
