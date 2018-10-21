@@ -34,8 +34,6 @@ class GsmDevice(object):
                                             apnConfiguration.get_password())
             self.send_and_check('AT+CIICR')
             self.send_and_check('AT+CIFSR')
-        else:
-            self.send_and_check('AT+CIPCLOSE')
         self.send_and_check_cipstart('TCP', httpConnection.get_host(),
                                             httpConnection.get_port())
 

@@ -14,12 +14,19 @@ from GsmHttpConnection import GsmHttpConnection
 from GsmApnConfiguration import GsmApnConfiguration
 from GsmException import GsmException
 from gps import GPS
+from threading import RLock
 
 class Main(object):
     """ main class """
 
     def __init__(self):
         self.status = 0
+
+        # start gps/gsm mux pin
+        self.mux = LED(4)
+        self.mux.on()
+
+        self.serial_lock = RLock()
 
         # thread objects
         self.mpu = MPUThread()
@@ -33,7 +40,7 @@ class Main(object):
         self.apn_config = GsmApnConfiguration("zap.vivo.com.br", "vivo", "vivo")
         self.gsm_http_config = GsmHttpConnection("monetovani.com")
 
-        self.gps = GPS(self.serial)
+        self.gps = GPS(self.serial, self.serial_lock)
         self.gps.setDaemon(True)
         self.gps.start()
 
@@ -42,10 +49,6 @@ class Main(object):
         self.regular_led = LED(27)
         self.bad_led = LED(22)
         self.turn_on_all_leds()
-
-        # start gps/gsm mux pin
-        self.mux = LED(4)
-        self.mux.off()
 
         self.svm = pickle.load(open('../../data/model_3_qualities.sav', 'rb'))
         self.measurements = MeasurementProcessor()
@@ -95,12 +98,13 @@ class Main(object):
                 end_lng = measurements_output[17]
                 detection_time = str(datetime.now())
 
-                self.gps.disable_serial()
-                self.mux.toggle()
+                self.serial_lock.acquire() # disables serial in GPS for GSM mux
+                self.serial.reset_input_buffer() # frees any GPS stuff in read buffer
+                self.mux.toggle() # enables GSM to talk
                 self.send_detection_to_server([road_quality, speed, start_lat, start_lng,
                                                end_lat, end_lng, detection_time])
-                self.mux.toggle()
-                self.gps.enable_serial()
+                self.mux.toggle() # enables GPS to talk
+                self.serial_lock.release()
 
         except KeyboardInterrupt:
             self.exit()

@@ -1,14 +1,15 @@
 from threading import Thread
 
 class GPS(Thread):
-    def __init__(self, serial):
+    def __init__(self, serial, lock):
         Thread.__init__(self)
         self.serial = serial
         self.signal_validity = False
         self.latitude = 0.
         self.longitude = 0.
         self.speed = 0.
-        self.enabled = True
+        self.lock = lock
+        self.lock.acquire()
 
     @staticmethod
     def convert_degrees(degrees, minutes):
@@ -62,19 +63,10 @@ class GPS(Thread):
     def is_valid(self):
         return self.signal_validity
 
-    def disable_serial(self):
-        self.enabled = False
-
-    def enable_serial(self):
-        self.enabled = True
-
     def run(self):
-        try:
-            while True:
-                if self.enabled:
-                    data = self.serial.readline()
-                    if data.startswith("$GPRMC"):
-                        self.parse_gprmc(data)
-
-        except Exception:
-            return
+        while True:
+            self.lock.acquire()
+            data = self.serial.readline()
+            if data.startswith("$GPRMC"):
+                self.parse_gprmc(data)
+            self.lock.release()
