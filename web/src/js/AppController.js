@@ -51,7 +51,7 @@ app.controller("AppController", ["$scope", "$http", "Map", function($scope, $htt
     };
 
     self.requestSensors = function() {
-        var url = "https://monetovani.com/roads/api.php/sensors";
+        var url = "https://monetovani.com/roads_api/sensors";
 
         $http.get(url).then(function success(response) {
             self.sensors = response.data;

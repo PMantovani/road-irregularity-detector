@@ -38,8 +38,8 @@ class GPS(Thread):
             speed_raw = float(params[7])
 
             # calculates latitude, longitude and speed
-            self.latitude = round(self.calculate_decimal(lat_raw, params[4]), 5)
-            self.longitude = round(self.calculate_decimal(lng_raw, params[6]), 5)
+            self.latitude = round(self.calculate_decimal(lat_raw, params[4]), 7)
+            self.longitude = round(self.calculate_decimal(lng_raw, params[6]), 7)
             self.speed = round(speed_raw*1.852, 2)  # converts from knots to km/h
             self.signal_validity = True
         except ValueError:
@@ -58,7 +58,7 @@ class GPS(Thread):
 
     def get_speed(self):
         return self.speed
-        
+
     def is_valid(self):
         return self.signal_validity
 

@@ -5,6 +5,7 @@ from gps import GPS
 from MPUThread import MPUThread
 from file_writer import FileWriter
 from gpiozero import LED, Button
+import serial
 
 class Main(object):
     """ main class """
@@ -37,7 +38,7 @@ class Main(object):
         self.status = 0
 
         # thread objects
-        self.gps = GPS()
+        self.gps = GPS(serial.Serial('/dev/ttyS0', 9600), threading.Lock())
         self.gps.setDaemon(True)
         self.mpu = MPUThread()
         self.mpu.setDaemon(True)
