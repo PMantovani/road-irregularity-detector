@@ -2,12 +2,11 @@
 import unittest
 # noinspection PyUnresolvedReferences
 import sys
-sys.path.insert(1, '../src')
 # noinspection PyUnresolvedReferences
-from GsmHttpConnection import GsmHttpConnection
+from src.GsmHttpConnection import GsmHttpConnection
 
 
-class GPSTest(unittest.TestCase):
+class TestGSM(unittest.TestCase):
 
     def test_build_without_slash(self):
         http = GsmHttpConnection("test.com", "path", "resource.html")
@@ -29,5 +28,3 @@ class GPSTest(unittest.TestCase):
         http = GsmHttpConnection("test.com", "", "resource.html")
         http.set_body('TEST')
         self.assertEqual(http.build(), "GET /resource.html HTTP/1.1\r\nHost: test.com\r\nContent-Length: 4\r\n\r\nTEST")
-
-unittest.main()
