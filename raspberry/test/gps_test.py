@@ -29,3 +29,7 @@ class TestGPS(unittest.TestCase):
         msg = "$GPRMC,005517.00,A,2523.42932,S,04913.25209,W,1.604,,211017,,,A*75"
         expected = -25.3904887, -49.2208682, 2.97
         self.assertEqual(self.gps_test.parse_gprmc(msg), expected)
+
+    def test_fail(self):
+        self.assertFalse(True)
+
