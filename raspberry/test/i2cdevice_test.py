@@ -2,9 +2,8 @@
 import unittest
 # noinspection PyUnresolvedReferences
 import sys
-sys.path.insert(1, '../src')
 # noinspection PyUnresolvedReferences
-from I2CDevice import I2CDevice
+from src.I2CDevice import I2CDevice
 
 
 class I2CDeviceTest(unittest.TestCase):
@@ -19,5 +18,3 @@ class I2CDeviceTest(unittest.TestCase):
         # tests overflow in new value
         res = I2CDevice.merge_bits(0b00000000, 0b111111, 2, 2)
         self.assertEqual(res, 0b00000110)
-
-unittest.main()

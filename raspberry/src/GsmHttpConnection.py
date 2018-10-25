@@ -6,7 +6,7 @@ class GsmHttpConnection(object):
         self.path = path
         self.resource = resource
         self.method = 'GET'
-        self.headers = {}
+        self.headers = {'Host': host}
         self.body = ''
         self.params = {}
 
@@ -15,6 +15,7 @@ class GsmHttpConnection(object):
 
     def set_body(self, body):
         self.body = body
+        self.headers['Content-Length'] = len(body)
 
     def get_host(self):
         return self.host
@@ -24,18 +25,25 @@ class GsmHttpConnection(object):
 
     def build(self):
         request = self.method
-        if len(self.path) > 0:
+        if self.path:
             if self.path[0] == '/':
-                request += ' ' + self.path + self.resource
-            else:
-                request += ' ' + self.path + '/' + self.resource
-        else:
-            request += ' ' + '/' + self.resource
+                self.path = self.path[1:]
 
+        if self.resource:
+            if self.resource[0] == '/':
+                self.resource = self.resource[1:]
+
+        request += ' '
+        if self.path != '':
+            request += '/' + self.path
+
+        request += '/' + self.resource
         request += ' HTTP/1.1\r\n'
-        request += 'Host: GSMDevice\r\n\r\n'
+        for header, value in self.headers.items():
+            request += header + ': ' + str(value) + '\r\n'
+        request += '\r\n'
 
-        if len(self.body) > 0:
-            request += self.body + '\r\n\r\n'
+        if self.body:
+            request += self.body
 
         return request

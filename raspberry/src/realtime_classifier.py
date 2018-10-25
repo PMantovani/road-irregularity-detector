@@ -12,13 +12,21 @@ from MeasurementProcessor import MeasurementProcessor
 from GsmDevice import GsmDevice
 from GsmHttpConnection import GsmHttpConnection
 from GsmApnConfiguration import GsmApnConfiguration
-from GsmThread import GsmThread
+from GsmException import GsmException
+from gps import GPS
+from threading import Lock
 
 class Main(object):
     """ main class """
 
     def __init__(self):
         self.status = 0
+
+        # start gps/gsm mux pin
+        self.mux = LED(4)
+        self.mux.on()
+
+        self.serial_lock = Lock()
 
         # thread objects
         self.mpu = MPUThread()
@@ -27,12 +35,15 @@ class Main(object):
         self.mpu.start()
 
         # GSM configuration
-        self.gsm = GsmThread(GsmDevice(serial.Serial('/dev/ttyS0', 115200)))
-        self.gsm.set_apn_config(GsmApnConfiguration("zap.vivo.com.br", "vivo", "vivo"))
-        self.gsm_http_config = GsmHttpConnection("monetovani.com")
-        self.gsm.set_http_config(self.gsm_http_config)
-        self.gsm.setDaemon(True)
-        self.gsm.start()
+        self.serial = serial.Serial('/dev/ttyS0', 9600)
+        self.gsm = GsmDevice(self.serial)
+        self.apn_config = GsmApnConfiguration("zap.vivo.com.br", "vivo", "vivo")
+        self.gsm_http_config = GsmHttpConnection("monetovani.com", "", "roads_api.php")
+        self.gsm_http_config.set_method('POST')
+
+        self.gps = GPS(self.serial, self.serial_lock)
+        self.gps.setDaemon(True)
+        self.gps.start()
 
         # start leds
         self.good_led = LED(17)
@@ -54,9 +65,9 @@ class Main(object):
                 while not self.measurements.is_buffer_full():
                     acc_x, acc_y, acc_z = self.mpu.getAccelerationValue()
                     gyr_x, gyr_y, gyr_z = self.mpu.getGyroscopeValue()
-                    speed = self.gsm.get_speed()
-                    latitude, longitude = self.gsm.get_coordinates()
-                    gps_validity = self.gsm.get_gps_validity()
+                    speed = self.gps.get_speed()
+                    latitude, longitude = self.gps.get_coordinates()
+                    gps_validity = self.gps.is_valid()
 
                     measurement_unit = [acc_x, acc_y, acc_z, gyr_x, gyr_y, gyr_z,
                                         speed, latitude, longitude, gps_validity]
@@ -88,9 +99,13 @@ class Main(object):
                 end_lng = measurements_output[17]
                 detection_time = str(datetime.now())
 
+                self.serial_lock.acquire() # disables serial in GPS for GSM mux
+                self.serial.reset_input_buffer() # frees any GPS stuff in read buffer
+                self.mux.toggle() # enables GSM to talk
                 self.send_detection_to_server([road_quality, speed, start_lat, start_lng,
                                                end_lat, end_lng, detection_time])
-
+                self.mux.toggle() # enables GPS to talk
+                self.serial_lock.release()
 
         except KeyboardInterrupt:
             self.exit()
@@ -119,21 +134,14 @@ class Main(object):
         body = self.build_request(self.detections_buffer)
         self.gsm_http_config.set_body(body)
 
-        self.gsm.trigger_http_request()
-        # wait for HTTP response
-        while not self.gsm.has_http_response():
-            pass
-
-        code, body = self.gsm.get_http_response()
-
-        if code == -1:
-            print('GSM Exception while sending HTTP Request')
-        else:
+        try:
+            code, body = self.gsm.send_http(self.gsm_http_config, self.apn_config)
             print('HTTP request successful.')
             print('Response Code: ' + code)
             print('Response Body: ' + body)
             self.detections_buffer = []
-
+        except GsmException as e:
+            print(e.message)
 
     def turn_off_all_leds(self):
         self.bad_led.off()

@@ -2,15 +2,14 @@
 import unittest
 # noinspection PyUnresolvedReferences
 import sys
-sys.path.insert(1, '../src')
 # noinspection PyUnresolvedReferences
-import gps
+from src import gps
 
 
-class GPSTest(unittest.TestCase):
+class TestGPS(unittest.TestCase):
     # noinspection PyPep8Naming,PyAttributeOutsideInit
     def setUp(self):
-        self.gps_test = gps.GPS(None)
+        self.gps_test = gps.GPS(None, None)
 
     def test_convert_degrees(self):
         res = self.gps_test.convert_degrees(57, 23.451)
@@ -28,7 +27,5 @@ class GPSTest(unittest.TestCase):
 
     def test_parse_gprmc(self):
         msg = "$GPRMC,005517.00,A,2523.42932,S,04913.25209,W,1.604,,211017,,,A*75"
-        expected = -25.39049, -49.22087, 2.97
+        expected = -25.3904887, -49.2208682, 2.97
         self.assertEqual(self.gps_test.parse_gprmc(msg), expected)
-
-unittest.main()

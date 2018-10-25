@@ -71,10 +71,12 @@ class RoadManagerDB {
         $key_params = ['sensor_id', 'start_latitude', 'start_longitude', 'end_latitude',
                        'end_longitude', 'speed', 'course', 'quality', 'reading_date'];
 
+        $orderedArray = [];
         for ($i=0; $i<sizeof($key_params); $i++) {
             if (!array_key_exists($key_params[$i], $data)) {
-                throw new MissingFieldsException();
+                throw new MissingFieldsException('Missing mandatory field ' . $keys_params[$i]);
             }
+            $orderedArray[] = $data[$key_params[$i]];
         }
 
         $query = 'INSERT INTO detections 
@@ -83,7 +85,7 @@ class RoadManagerDB {
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());';
 
         if ($stmt = $this->db->prepare($query)) {
-            $stmt->bind_param("sssssssss", ...array_values($data));
+            $stmt->bind_param("sssssssss", ...array_values($orderedArray));
             if(!$stmt->execute()) {
                 throw new DbOperationException();
             }

@@ -1,20 +1,14 @@
 from threading import Thread
-import sys
-import serial
-
 
 class GPS(Thread):
-    def is_valid(self):
-        return self.signal_validity
-
-    def __init__(self):
+    def __init__(self, serial, lock):
         Thread.__init__(self)
-        self.port = '/dev/ttyS0'
-        self.speed = 9600
+        self.serial = serial
         self.signal_validity = False
         self.latitude = 0.
         self.longitude = 0.
         self.speed = 0.
+        self.lock = lock
 
     @staticmethod
     def convert_degrees(degrees, minutes):
@@ -44,8 +38,8 @@ class GPS(Thread):
             speed_raw = float(params[7])
 
             # calculates latitude, longitude and speed
-            self.latitude = round(self.calculate_decimal(lat_raw, params[4]), 5)
-            self.longitude = round(self.calculate_decimal(lng_raw, params[6]), 5)
+            self.latitude = round(self.calculate_decimal(lat_raw, params[4]), 7)
+            self.longitude = round(self.calculate_decimal(lng_raw, params[6]), 7)
             self.speed = round(speed_raw*1.852, 2)  # converts from knots to km/h
             self.signal_validity = True
         except ValueError:
@@ -53,23 +47,25 @@ class GPS(Thread):
 
         return self.latitude, self.longitude, self.speed
 
-    def getLatitude(self):
+    def get_latitude(self):
         return self.latitude
 
-    def getLongitude(self):
+    def get_longitude(self):
         return self.longitude
 
-    def getSpeed(self):
+    def get_coordinates(self):
+        return self.latitude, self.longitude
+
+    def get_speed(self):
         return self.speed
 
+    def is_valid(self):
+        return self.signal_validity
+
     def run(self):
-        try:
-            my_serial = serial.Serial(self.port, self.speed)
-
-            while True:
-                data = my_serial.readline()
-                if data.startswith("$GPRMC"):
-                    self.parse_gprmc(data)
-
-        except Exception as e:
-            return
+        while True:
+            self.lock.acquire()
+            data = self.serial.readline()
+            if data.startswith("$GPRMC"):
+                self.parse_gprmc(data)
+            self.lock.release()

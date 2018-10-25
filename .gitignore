@@ -1,6 +1,7 @@
 
 .idea/
 road-irregularity-detector.iml
+raspberry/raspberry.egg-info/
 web/src/.htaccess
 web/src/node_modules/
 web/src/Gruntfile.js
