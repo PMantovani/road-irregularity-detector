@@ -61,7 +61,6 @@ class Main(object):
 
         try:
             while True:
-
                 while not self.measurements.is_buffer_full():
                     acc_x, acc_y, acc_z = self.mpu.getAccelerationValue()
                     gyr_x, gyr_y, gyr_z = self.mpu.getGyroscopeValue()

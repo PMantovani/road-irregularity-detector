@@ -1,4 +1,5 @@
 from threading import Thread
+import time
 
 class GPS(Thread):
     def __init__(self, serial, lock):
@@ -69,3 +70,4 @@ class GPS(Thread):
             if data.startswith("$GPRMC"):
                 self.parse_gprmc(data)
             self.lock.release()
+            time.sleep(0.05)

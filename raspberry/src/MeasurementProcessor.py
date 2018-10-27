@@ -38,7 +38,8 @@ class MeasurementProcessor(object):
         return True
 
     def is_buffer_full(self):
-        return (self.end_time - self.start_time) > MeasurementProcessor.TOTAL_SAMPLING_TIME
+        diff = (self.end_time - self.start_time)
+        return diff > MeasurementProcessor.TOTAL_SAMPLING_TIME
 
     def get_processed_output(self):
         np_array = np.array(self.measurements)
