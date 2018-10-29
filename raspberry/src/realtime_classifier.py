@@ -1,11 +1,10 @@
 """ main module """
-from __future__ import print_function
 import sys
 import pickle
 import json
-from datetime import datetime
 import numpy as np
 import serial
+import time
 from MPUThread import MPUThread
 from gpiozero import LED
 from MeasurementProcessor import MeasurementProcessor
@@ -72,6 +71,7 @@ class Main(object):
                                         speed, latitude, longitude, gps_validity]
                     if not self.measurements.add_measurement(measurement_unit):
                         self.turn_off_all_leds()
+                    time.sleep(0.01)
 
                 measurements_output = self.measurements.get_processed_output()
                 indicators = np.reshape(measurements_output[:14], (1, -1))
@@ -96,7 +96,7 @@ class Main(object):
                 start_lng = measurements_output[15]
                 end_lat = measurements_output[16]
                 end_lng = measurements_output[17]
-                detection_time = str(datetime.now())
+                detection_time = str(self.gps.get_current_time())
 
                 self.serial_lock.acquire() # disables serial in GPS for GSM mux
                 self.serial.reset_input_buffer() # frees any GPS stuff in read buffer
