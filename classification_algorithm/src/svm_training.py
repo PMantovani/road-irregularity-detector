@@ -5,7 +5,7 @@ import numpy as np
 from sklearn import svm
 from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 training_data = []
 training_classes = []
@@ -109,12 +109,12 @@ with open(filename, 'r') as p_data:
                 to_training_data = True
         first_row = False
 
-scaler = MinMaxScaler()
+scaler = StandardScaler()
 training_normalized = scaler.fit_transform(training_data)
 test_normalized = scaler.transform(test_data)
 
 if sweep_run:
-    sweep_values = [0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000, 1000000]
+    sweep_values = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000]
     f1_matrix = np.empty((len(sweep_values), len(sweep_values)))
 
     for i, gamma in enumerate(sweep_values):
@@ -153,4 +153,5 @@ else:
         out_file.write(f1)
 
 # save model to file
-# pickle.dump(classifier, open('../../data/model.sav', 'wb'))
+pickle.dump(classifier, open('../../data/model.sav', 'wb'))
+pickle.dump(scaler, open('../../data/scaler.sav', 'wb'))

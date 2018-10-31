@@ -50,7 +50,8 @@ class Main(object):
         self.bad_led = LED(22)
         self.turn_on_all_leds()
 
-        self.svm = pickle.load(open('../../data/model_3_qualities.sav', 'rb'))
+        self.svm = pickle.load(open('../../data/model.sav', 'rb'))
+        self.scaler = pickle.load(open('../../data/scaler.sav', 'rb'))
         self.measurements = MeasurementProcessor()
 
         self.detections_buffer = []
@@ -75,8 +76,9 @@ class Main(object):
 
                 measurements_output = self.measurements.get_processed_output()
                 indicators = np.reshape(measurements_output[:14], (1, -1))
-
-                road_quality = self.svm.predict(indicators)[0]
+                normalized = self.scaler.transform(indicators)
+                
+                road_quality = int(self.svm.predict(normalized)[0])
 
                 if road_quality == 1:
                     self.bad_led.on()

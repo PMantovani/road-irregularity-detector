@@ -29,3 +29,20 @@ class TestGPS(unittest.TestCase):
         msg = "$GPRMC,005517.00,A,2523.42932,S,04913.25209,W,1.604,,211017,,,A*75"
         expected = -25.3904887, -49.2208682, 2.97
         self.assertEqual(self.gps_test.parse_gprmc(msg), expected)
+
+    def test_current_time_2018(self):
+        msg = "$GPRMC,005517.00,A,2523.42932,S,04913.25209,W,1.604,,211018,,,A*75"
+        expected = 21, 10, 2018
+        self.gps_test.parse_gprmc(msg)
+        result = self.gps_test.get_current_time()
+        self.assertEqual((result.day, result.month, result.year), expected)
+
+    def test_current_time_1999(self):
+        msg = "$GPRMC,005517.00,A,2523.42932,S,04913.25209,W,1.604,,211099,,,A*75"
+        expected = 21, 10, 1999
+        self.gps_test.parse_gprmc(msg)
+        result = self.gps_test.get_current_time()
+        self.assertEqual((result.day, result.month, result.year), expected)
+
+if __name__ == '__main__':
+    unittest.main()
